@@ -1,35 +1,1935 @@
-// ─────────────────────────────────────────────
-// Settings Page
-// ─────────────────────────────────────────────
-"use client";
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MarketHub — Premium Multi-Category Marketplace</title>
+<meta name="description" content="Buy, sell, and offer services across niche categories. The modern marketplace platform.">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      fontFamily: {
+        display: ['"Playfair Display"', 'serif'],
+        body: ['"DM Sans"', 'sans-serif'],
+      },
+      colors: {
+        brand: {
+          50: '#fef7ec',
+          100: '#fdebd3',
+          200: '#fad3a5',
+          300: '#f6b56d',
+          400: '#f19033',
+          500: '#ee7612',
+          600: '#df5c08',
+          700: '#b94309',
+          800: '#93350f',
+          900: '#772e10',
+          950: '#401506',
+        },
+        surface: {
+          0: '#ffffff',
+          1: '#f8f7f4',
+          2: '#f0ede8',
+          3: '#e5e1da',
+        },
+        ink: {
+          0: '#0a0a0a',
+          1: '#1a1a1a',
+          2: '#2d2d2d',
+          3: '#4a4a4a',
+          4: '#6b6b6b',
+          5: '#8a8a8a',
+        }
+      }
+    }
+  }
+}
+</script>
+<style>
+/* BASE */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+.dark body { background: #0a0a0a; color: #f0ede8; }
 
-import React, { useState } from "react";
-import { useAuth } from "@/context/auth-context";
-import { useToast } from "@/context/toast-context";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #4a4a4a; border-radius: 3px; }
 
-export default function SettingsPage() {
-  const { user, updateUsername, updateAvatar, logout } = useAuth();
-  const { toast } = useToast();
-  const [name, setName] = useState(user?.username ?? "");
-  const [bio, setBio] = useState(user?.bio ?? "");
-  const [dark, setDark] = useState(false);
-  const [lang, setLang] = useState("en");
+/* ANIMATIONS */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(1.4); opacity: 0; } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes toast-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes toast-out { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+@keyframes countUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.animate-fadeInUp { animation: fadeInUp 0.6s ease-out both; }
+.animate-fadeIn { animation: fadeIn 0.5s ease-out both; }
+.animate-slideInRight { animation: slideInRight 0.5s ease-out both; }
+.animate-slideDown { animation: slideDown 0.3s ease-out both; }
+.animate-scaleIn { animation: scaleIn 0.3s ease-out both; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-toast-in { animation: toast-in 0.4s ease-out both; }
+.animate-countUp { animation: countUp 0.5s ease-out both; }
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+.delay-6 { animation-delay: 0.6s; }
+
+/* SKELETON */
+.skeleton { background: linear-gradient(90deg, #e5e1da 25%, #f0ede8 50%, #e5e1da 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+.dark .skeleton { background: linear-gradient(90deg, #2d2d2d 25%, #3a3a3a 50%, #2d2d2d 75%); background-size: 200% 100%; }
+
+/* GLASS */
+.glass { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(255,255,255,0.72); border: 1px solid rgba(255,255,255,0.3); }
+.dark .glass { background: rgba(20,20,20,0.78); border: 1px solid rgba(255,255,255,0.06); }
+
+/* GRADIENT MESH */
+.hero-mesh {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(238,118,18,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 70%, rgba(185,67,9,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(241,144,51,0.06) 0%, transparent 60%);
+}
+.dark .hero-mesh {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(238,118,18,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 70%, rgba(185,67,9,0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(241,144,51,0.08) 0%, transparent 60%);
+}
+
+/* NOISE TEXTURE */
+.noise::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* CARD HOVER */
+.card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+.dark .card-hover:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+
+/* TRANSITIONS */
+.theme-transition { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+
+/* CATEGORY ICON GRADIENT */
+.cat-gradient { background: linear-gradient(135deg, #ee7612, #df5c08); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+/* TOAST */
+.toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+
+/* CHAT BUBBLE */
+.chat-bubble-sent { border-radius: 18px 18px 4px 18px; }
+.chat-bubble-received { border-radius: 18px 18px 18px 4px; }
+
+/* DRAG & DROP */
+.drop-zone-active { border-color: #ee7612 !important; background: rgba(238,118,18,0.05) !important; }
+
+/* MOBILE NAV */
+@media (max-width: 768px) {
+  .hide-mobile { display: none; }
+}
+
+/* INTERSECTION OBSERVER */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body class="bg-surface-1 dark:bg-ink-0 text-ink-0 dark:text-surface-2 font-body theme-transition">
+<div id="root"></div>
+
+<script type="text/babel" data-type="module">
+const { useState, useEffect, useRef, useCallback, createContext, useContext, useMemo } = React;
+
+// ==================== DATA ====================
+const CATEGORIES = [
+  { id: 'cars', name: 'Cars', icon: '🚗', count: 2340, color: '#ee7612' },
+  { id: 'real-estate', name: 'Real Estate', icon: '🏠', count: 1856, color: '#b94309' },
+  { id: 'electronics', name: 'Electronics', icon: '📱', count: 5420, color: '#4a90d9' },
+  { id: 'gaming', name: 'Gaming', icon: '🎮', count: 3210, color: '#7c3aed' },
+  { id: 'jobs', name: 'Jobs', icon: '💼', count: 8920, color: '#059669' },
+  { id: 'freelance', name: 'Freelance Services', icon: '🎨', count: 4560, color: '#d946ef' },
+  { id: 'furniture', name: 'Furniture', icon: '🛋️', count: 1920, color: '#ca8a04' },
+  { id: 'fashion', name: 'Fashion', icon: '👗', count: 6780, color: '#e11d48' },
+  { id: 'books', name: 'Books', icon: '📚', count: 3450, color: '#0891b2' },
+  { id: 'collectibles', name: 'Collectibles', icon: '🏺', count: 1230, color: '#92400e' },
+  { id: 'pets', name: 'Pets', icon: '🐾', count: 2100, color: '#16a34a' },
+  { id: 'sports', name: 'Sports', icon: '⚽', count: 2890, color: '#2563eb' },
+  { id: 'business', name: 'Business Equipment', icon: '🏭', count: 980, color: '#475569' },
+  { id: 'local', name: 'Local Services', icon: '🔧', count: 5670, color: '#ea580c' },
+];
+
+const LISTINGS = [
+  { id: 1, title: '2022 Tesla Model 3 Long Range', price: 38500, category: 'cars', image: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=600&h=400&fit=crop', location: 'San Francisco, CA', seller: 'AutoElite', rating: 4.9, verified: true, featured: true, views: 1240, favorites: 89, posted: '2 hours ago', condition: 'Used - Like New' },
+  { id: 2, title: 'Modern Downtown Apartment - 2BR', price: 2850, category: 'real-estate', image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&h=400&fit=crop', location: 'New York, NY', seller: 'UrbanLiving', rating: 4.8, verified: true, featured: true, views: 2340, favorites: 156, posted: '5 hours ago', condition: 'For Rent', priceLabel: '/month' },
+  { id: 3, title: 'MacBook Pro 16" M3 Max - 64GB', price: 2899, category: 'electronics', image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&h=400&fit=crop', location: 'Austin, TX', seller: 'TechDeals', rating: 4.7, verified: true, featured: true, views: 890, favorites: 67, posted: '1 hour ago', condition: 'Brand New' },
+  { id: 4, title: 'PS5 Pro + 5 Games Bundle', price: 749, category: 'gaming', image: 'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=600&h=400&fit=crop', location: 'Chicago, IL', seller: 'GameZone', rating: 4.6, verified: false, featured: false, views: 567, favorites: 34, posted: '3 hours ago', condition: 'Used - Good' },
+  { id: 5, title: 'Mid-Century Modern Sofa Set', price: 1450, category: 'furniture', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&h=400&fit=crop', location: 'Portland, OR', seller: 'HomeStyle', rating: 4.9, verified: true, featured: true, views: 445, favorites: 52, posted: '6 hours ago', condition: 'Used - Excellent' },
+  { id: 6, title: 'Vintage Leather Jacket - Size M', price: 189, category: 'fashion', image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&h=400&fit=crop', location: 'Los Angeles, CA', seller: 'VintageVibes', rating: 4.5, verified: false, featured: false, views: 234, favorites: 28, posted: '8 hours ago', condition: 'Vintage - Good' },
+  { id: 7, title: 'Full Stack Web Development', price: 75, category: 'freelance', image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop', location: 'Remote', seller: 'DevMaster', rating: 5.0, verified: true, featured: true, views: 1560, favorites: 98, posted: '1 day ago', condition: 'Service', priceLabel: '/hour' },
+  { id: 8, title: 'Rare 1st Edition Harry Potter Set', price: 4200, category: 'collectibles', image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&h=400&fit=crop', location: 'Boston, MA', seller: 'BookCollector', rating: 4.8, verified: true, featured: false, views: 678, favorites: 45, posted: '12 hours ago', condition: 'Collectible' },
+  { id: 9, title: 'Golden Retriever Puppies', price: 1200, category: 'pets', image: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&h=400&fit=crop', location: 'Denver, CO', seller: 'PawsHome', rating: 4.9, verified: true, featured: true, views: 3450, favorites: 234, posted: '4 hours ago', condition: 'Available Now' },
+  { id: 10, title: 'Professional Mountain Bike - Carbon', price: 3200, category: 'sports', image: 'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=600&h=400&fit=crop', location: 'Boulder, CO', seller: 'RidePro', rating: 4.7, verified: true, featured: false, views: 432, favorites: 38, posted: '2 days ago', condition: 'Used - Excellent' },
+  { id: 11, title: 'Commercial Espresso Machine', price: 5600, category: 'business', image: 'https://images.unsplash.com/photo-1510888009506-64a0c0b0da05?w=600&h=400&fit=crop', location: 'Seattle, WA', seller: 'CafeSupply', rating: 4.6, verified: true, featured: false, views: 189, favorites: 12, posted: '3 days ago', condition: 'Refurbished' },
+  { id: 12, title: 'Senior Software Engineer Position', price: 180000, category: 'jobs', image: 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?w=600&h=400&fit=crop', location: 'Remote', seller: 'TechCorp', rating: 4.4, verified: true, featured: true, views: 5670, favorites: 312, posted: '1 day ago', condition: 'Full-time', priceLabel: '/year' },
+];
+
+const TESTIMONIALS = [
+  { id: 1, name: 'Sarah Chen', role: 'Freelance Designer', avatar: 'https://i.pravatar.cc/80?img=1', text: 'MarketHub transformed how I find clients. The platform is incredibly intuitive and the quality of leads is outstanding.', rating: 5 },
+  { id: 2, name: 'Marcus Johnson', role: 'Car Dealer', avatar: 'https://i.pravatar.cc/80?img=3', text: 'We sold 40% more vehicles after switching to MarketHub. The analytics dashboard gives us insights we never had before.', rating: 5 },
+  { id: 3, name: 'Emma Rodriguez', role: 'Vintage Collector', avatar: 'https://i.pravatar.cc/80?img=5', text: 'The collectibles community here is amazing. Found rare pieces I searched for years. The verification system builds real trust.', rating: 5 },
+];
+
+// ==================== CONTEXT ====================
+const AppContext = createContext();
+
+function AppProvider({ children }) {
+  const [theme, setTheme] = useState('light');
+  const [currentPage, setCurrentPage] = useState('home');
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedListing, setSelectedListing] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [toasts, setToasts] = useState([]);
+  const [savedListings, setSavedListings] = useState([3, 5, 8]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [messages, setMessages] = useState([
+    { id: 1, from: 'AutoElite', avatar: 'https://i.pravatar.cc/40?img=12', lastMessage: 'Is the Tesla still available?', time: '2 min ago', unread: 2, online: true },
+    { id: 2, from: 'TechDeals', avatar: 'https://i.pravatar.cc/40?img=14', lastMessage: 'Thanks for the purchase!', time: '1 hour ago', unread: 0, online: true },
+    { id: 3, from: 'HomeStyle', avatar: 'https://i.pravatar.cc/40?img=16', lastMessage: 'I can deliver on Saturday', time: '3 hours ago', unread: 1, online: false },
+    { id: 4, from: 'DevMaster', avatar: 'https://i.pravatar.cc/40?img=18', lastMessage: 'Project files are ready for review', time: 'Yesterday', unread: 0, online: false },
+  ]);
+  const [chatMessages, setChatMessages] = useState([
+    { id: 1, sender: 'them', text: 'Hi! Is the MacBook Pro still available?', time: '10:30 AM' },
+    { id: 2, sender: 'me', text: 'Yes, it is! Would you like to arrange a viewing?', time: '10:32 AM' },
+    { id: 3, sender: 'them', text: 'Absolutely! I\'m free this weekend. Can we meet at your location?', time: '10:33 AM' },
+    { id: 4, sender: 'me', text: 'Saturday at 2pm works for me. I\'ll send you the exact address.', time: '10:35 AM' },
+    { id: 5, sender: 'them', text: 'Perfect, looking forward to it! 🎉', time: '10:36 AM' },
+  ]);
+
+  const toggleTheme = () => {
+    setTheme(t => {
+      const next = t === 'light' ? 'dark' : 'light';
+      document.documentElement.classList.toggle('dark', next === 'dark');
+      return next;
+    });
+  };
+
+  const addToast = useCallback((message, type = 'success') => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3500);
+  }, []);
+
+  const toggleSave = useCallback((listingId) => {
+    setSavedListings(prev => {
+      if (prev.includes(listingId)) {
+        addToast('Removed from saved listings');
+        return prev.filter(id => id !== listingId);
+      }
+      addToast('Saved to your listings');
+      return [...prev, listingId];
+    });
+  }, [addToast]);
+
+  const navigate = useCallback((page, data = {}) => {
+    setCurrentPage(page);
+    if (data.category) setSelectedCategory(data.category);
+    if (data.listing) setSelectedListing(data.listing);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  return (
+    <AppContext.Provider value={{
+      theme, toggleTheme, currentPage, navigate, selectedCategory, setSelectedCategory,
+      selectedListing, setSelectedListing, searchQuery, setSearchQuery, toasts,
+      savedListings, toggleSave, isLoggedIn, setIsLoggedIn, currentUser, setCurrentUser,
+      addToast, messages, setMessages, chatMessages, setChatMessages
+    }}>
+      {children}
+    </AppContext.Provider>
+  );
+}
+
+function useApp() { return useContext(AppContext); }
+
+// ==================== ICONS ====================
+/* PLACEHOLDER: Icons will be added inline */
+const Icons = {
+  Sun: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>,
+  Moon: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>,
+  Search: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>,
+  Heart: ({filled}) => filled ? <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
+  MapPin: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>,
+  Star: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>,
+  Verified: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="#ee7612"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+  Menu: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>,
+  X: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>,
+  Bell: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
+  Message: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+  User: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+  Plus: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>,
+  ChevronRight: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>,
+  ChevronDown: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 9l6 6 6-6"/></svg>,
+  ArrowLeft: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>,
+  Eye: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>,
+  Upload: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>,
+  Send: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>,
+  Filter: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>,
+  Grid: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>,
+  List: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>,
+  BarChart: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>,
+  Settings: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
+  Trash: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
+  Edit: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+  Shield: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+  Zap: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z"/></svg>,
+  Globe: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+  TrendingUp: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg>,
+  DollarSign: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
+  Users: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+  Package: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>,
+  Check: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>,
+  Image: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>,
+  Flag: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/></svg>,
+};
+
+// ==================== TOAST SYSTEM ====================
+function ToastContainer() {
+  const { toasts } = useApp();
+  return (
+    <div className="toast-container">
+      {toasts.map(t => (
+        <div key={t.id} className={`animate-toast-in glass rounded-xl px-5 py-3 shadow-lg flex items-center gap-3 min-w-[280px] ${t.type === 'error' ? 'border-red-400' : 'border-brand-400'}`}>
+          <div className={`w-2 h-2 rounded-full ${t.type === 'error' ? 'bg-red-500' : 'bg-brand-500'}`} />
+          <span className="text-sm font-medium text-ink-1 dark:text-surface-2">{t.message}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ==================== NAVBAR ====================
+function Navbar() {
+  const { theme, toggleTheme, navigate, isLoggedIn, setIsLoggedIn, setCurrentUser, addToast, savedListings, messages } = useApp();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const unreadMsgs = messages.filter(m => m.unread > 0).reduce((a, b) => a + b.unread, 0);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return (
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'glass shadow-sm' : 'bg-transparent'}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 lg:h-18">
+          {/* Logo */}
+          <button onClick={() => navigate('home')} className="flex items-center gap-2 group">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-lg shadow-brand-500/20 group-hover:shadow-brand-500/40 transition-shadow">
+              <span className="text-white font-display font-bold text-lg">M</span>
+            </div>
+            <span className="font-display font-bold text-xl tracking-tight text-ink-0 dark:text-surface-1">MarketHub</span>
+          </button>
+
+          {/* Desktop Nav */}
+          <div className="hidden lg:flex items-center gap-1">
+            {[['home','Home'],['browse','Browse'],['freelance','Services'],['jobs','Jobs']].map(([page, label]) => (
+              <button key={page} onClick={() => navigate(page)} className="px-4 py-2 text-sm font-medium text-ink-3 dark:text-surface-3 hover:text-ink-0 dark:hover:text-surface-1 rounded-lg hover:bg-ink-0/5 dark:hover:bg-surface-1/5 transition-all">
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Right */}
+          <div className="flex items-center gap-2">
+            <button onClick={toggleTheme} className="p-2.5 rounded-xl hover:bg-ink-0/5 dark:hover:bg-surface-1/10 transition-colors text-ink-3 dark:text-surface-3">
+              {theme === 'light' ? <Icons.Moon /> : <Icons.Sun />}
+            </button>
+
+            {isLoggedIn ? (
+              <>
+                <button onClick={() => navigate('messages')} className="p-2.5 rounded-xl hover:bg-ink-0/5 dark:hover:bg-surface-1/10 transition-colors text-ink-3 dark:text-surface-3 relative">
+                  <Icons.Message />
+                  {unreadMsgs > 0 && <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-brand-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">{unreadMsgs}</span>}
+                </button>
+                <button onClick={() => navigate('saved')} className="p-2.5 rounded-xl hover:bg-ink-0/5 dark:hover:bg-surface-1/10 transition-colors text-ink-3 dark:text-surface-3 relative">
+                  <Icons.Heart filled={false} />
+                  {savedListings.length > 0 && <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-brand-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">{savedListings.length}</span>}
+                </button>
+                <button onClick={() => navigate('create')} className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand-500 to-brand-600 text-white text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all shadow-lg shadow-brand-500/20 hover:shadow-brand-500/30">
+                  <Icons.Plus /> <span>Sell</span>
+                </button>
+                <div className="relative">
+                  <button onClick={() => setProfileOpen(!profileOpen)} className="w-9 h-9 rounded-xl overflow-hidden ring-2 ring-transparent hover:ring-brand-400 transition-all">
+                    <img src="https://i.pravatar.cc/80?img=8" alt="Profile" className="w-full h-full object-cover" />
+                  </button>
+                  {profileOpen && (
+                    <div className="absolute right-0 top-12 w-56 glass rounded-2xl shadow-2xl border border-ink-0/5 dark:border-surface-1/10 py-2 animate-slideDown">
+                      <div className="px-4 py-3 border-b border-ink-0/5 dark:border-surface-1/10">
+                        <p className="font-semibold text-sm">Alex Thompson</p>
+                        <p className="text-xs text-ink-4 dark:text-surface-4">alex@markethub.com</p>
+                      </div>
+                      {[['profile','My Profile'],['seller-dashboard','Seller Dashboard'],['saved','Saved Listings'],['settings','Settings']].map(([page, label]) => (
+                        <button key={page} onClick={() => { navigate(page); setProfileOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm hover:bg-ink-0/5 dark:hover:bg-surface-1/5 transition-colors">
+                          {label}
+                        </button>
+                      ))}
+                      <div className="border-t border-ink-0/5 dark:border-surface-1/10 mt-1 pt-1">
+                        <button onClick={() => { setIsLoggedIn(false); setCurrentUser(null); setProfileOpen(false); addToast('Logged out successfully'); }} className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors">
+                          Log Out
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="hidden sm:flex items-center gap-2">
+                <button onClick={() => navigate('login')} className="px-4 py-2 text-sm font-medium text-ink-3 dark:text-surface-3 hover:text-ink-0 dark:hover:text-surface-1 rounded-xl transition-colors">
+                  Log In
+                </button>
+                <button onClick={() => navigate('register')} className="px-4 py-2 bg-gradient-to-r from-brand-500 to-brand-600 text-white text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all shadow-lg shadow-brand-500/20">
+                  Sign Up
+                </button>
+              </div>
+            )}
+
+            <button onClick={() => setMobileOpen(!mobileOpen)} className="lg:hidden p-2 rounded-xl hover:bg-ink-0/5 dark:hover:bg-surface-1/10">
+              {mobileOpen ? <Icons.X /> : <Icons.Menu />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {mobileOpen && (
+        <div className="lg:hidden glass border-t border-ink-0/5 dark:border-surface-1/10 animate-slideDown">
+          <div className="px-4 py-4 space-y-1">
+            {[['home','Home'],['browse','Browse'],['freelance','Services'],['jobs','Jobs'],['create','Post a Listing']].map(([page, label]) => (
+              <button key={page} onClick={() => { navigate(page); setMobileOpen(false); }} className="block w-full text-left px-4 py-3 text-sm font-medium rounded-xl hover:bg-ink-0/5 dark:hover:bg-surface-1/5 transition-colors">
+                {label}
+              </button>
+            ))}
+            {!isLoggedIn && (
+              <div className="flex gap-2 pt-2">
+                <button onClick={() => { navigate('login'); setMobileOpen(false); }} className="flex-1 py-3 text-sm font-medium text-center rounded-xl border border-ink-0/10 dark:border-surface-1/10">Log In</button>
+                <button onClick={() => { navigate('register'); setMobileOpen(false); }} className="flex-1 py-3 text-sm font-semibold text-center rounded-xl bg-brand-500 text-white">Sign Up</button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+}
+
+// ==================== LISTING CARD ====================
+function ListingCard({ listing, index = 0 }) {
+  const { navigate, savedListings, toggleSave } = useApp();
+  const isSaved = savedListings.includes(listing.id);
+
+  return (
+    <div className={`animate-fadeInUp delay-${(index % 4) + 1} group cursor-pointer`} onClick={() => navigate('listing', { listing })}>
+      <div className="card-hover bg-surface-0 dark:bg-ink-1 rounded-2xl overflow-hidden border border-ink-0/5 dark:border-surface-1/5">
+        <div className="relative aspect-[4/3] overflow-hidden">
+          <img src={listing.image} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+          {listing.featured && (
+            <div className="absolute top-3 left-3 px-3 py-1 bg-brand-500 text-white text-[11px] font-bold uppercase tracking-wider rounded-lg shadow-lg">
+              Featured
+            </div>
+          )}
+          <button
+            onClick={(e) => { e.stopPropagation(); toggleSave(listing.id); }}
+            className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all ${isSaved ? 'bg-brand-500 text-white' : 'bg-white/80 dark:bg-ink-1/80 text-ink-2 dark:text-surface-2 hover:bg-white dark:hover:bg-ink-1'}`}
+          >
+            <Icons.Heart filled={isSaved} />
+          </button>
+          <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+            <div>
+              <p className="text-white font-bold text-lg">${listing.price.toLocaleString()}{listing.priceLabel && <span className="font-normal text-sm opacity-80">{listing.priceLabel}</span>}</p>
+            </div>
+          </div>
+        </div>
+        <div className="p-4">
+          <h3 className="font-semibold text-[15px] leading-snug text-ink-0 dark:text-surface-1 line-clamp-2 mb-2 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">{listing.title}</h3>
+          <div className="flex items-center gap-1.5 text-ink-4 dark:text-surface-4 text-sm mb-3">
+            <Icons.MapPin /> <span>{listing.location}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-ink-2 dark:text-surface-3">{listing.seller}</span>
+              {listing.verified && <Icons.Verified />}
+            </div>
+            <div className="flex items-center gap-1 text-sm">
+              <Icons.Star />
+              <span className="font-medium text-ink-2 dark:text-surface-3">{listing.rating}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ==================== SKELETON CARD ====================
+function SkeletonCard() {
+  return (
+    <div className="bg-surface-0 dark:bg-ink-1 rounded-2xl overflow-hidden border border-ink-0/5 dark:border-surface-1/5">
+      <div className="aspect-[4/3] skeleton" />
+      <div className="p-4 space-y-3">
+        <div className="h-4 skeleton w-3/4" />
+        <div className="h-3 skeleton w-1/2" />
+        <div className="flex justify-between">
+          <div className="h-3 skeleton w-1/4" />
+          <div className="h-3 skeleton w-1/6" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ==================== SECTION HEADING ====================
+function SectionHeading({ title, subtitle, action, onAction }) {
+  return (
+    <div className="flex items-end justify-between mb-8">
+      <div>
+        <h2 className="font-display text-3xl sm:text-4xl font-bold text-ink-0 dark:text-surface-1 tracking-tight">{title}</h2>
+        {subtitle && <p className="mt-2 text-ink-4 dark:text-surface-4 text-lg">{subtitle}</p>}
+      </div>
+      {action && (
+        <button onClick={onAction} className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-500 transition-colors">
+          {action} <Icons.ChevronRight />
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ==================== HOME PAGE ====================
+function HomePage() {
+  const { navigate, setSearchQuery, addToast } = useApp();
+  const [heroSearch, setHeroSearch] = useState('');
+  const [statsVisible, setStatsVisible] = useState(false);
+  const statsRef = useRef(null);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setStatsVisible(true); }, { threshold: 0.3 });
+    if (statsRef.current) obs.observe(statsRef.current);
+    return () => obs.disconnect();
+  }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setSearchQuery(heroSearch);
+    navigate('search');
+  };
+
+  const featuredListings = LISTINGS.filter(l => l.featured).slice(0, 6);
+  const trendingListings = LISTINGS.slice(0, 4);
+
+  const stats = [
+    { label: 'Active Listings', value: '48K+', icon: <Icons.Package /> },
+    { label: 'Verified Sellers', value: '12K+', icon: <Icons.Shield /> },
+    { label: 'Cities Covered', value: '350+', icon: <Icons.Globe /> },
+    { label: 'Transactions', value: '$2.4M', icon: <Icons.DollarSign /> },
+  ];
+
+  return (
+    <div>
+      {/* HERO */}
+      <section className="relative min-h-[92vh] flex items-center hero-mesh noise overflow-hidden">
+        <div className="absolute top-20 right-10 w-72 h-72 bg-brand-400/10 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-brand-600/5 rounded-full blur-3xl animate-float delay-3" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+          <div className="max-w-3xl">
+            <div className="animate-fadeInUp inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-50 dark:bg-brand-950/30 border border-brand-200 dark:border-brand-800/30 mb-8">
+              <Icons.Zap />
+              <span className="text-sm font-semibold text-brand-700 dark:text-brand-400">New: AI-powered recommendations are live</span>
+            </div>
+            <h1 className="animate-fadeInUp delay-1 font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-ink-0 dark:text-surface-1 tracking-tight leading-[1.08]">
+              Buy, sell &amp; offer<br />
+              <span className="bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent">anything, anywhere</span>
+            </h1>
+            <p className="animate-fadeInUp delay-2 mt-6 text-lg sm:text-xl text-ink-4 dark:text-surface-4 leading-relaxed max-w-xl">
+              The premium marketplace connecting buyers and sellers across 14 categories. From cars to freelance services — everything in one place.
+            </p>
+
+            {/* SEARCH BAR */}
+            <form onSubmit={handleSearch} className="animate-fadeInUp delay-3 mt-10">
+              <div className="flex items-center gap-2 p-2 bg-surface-0 dark:bg-ink-1 rounded-2xl shadow-xl shadow-ink-0/5 dark:shadow-ink-0/30 border border-ink-0/5 dark:border-surface-1/10 max-w-2xl">
+                <div className="flex items-center gap-3 flex-1 px-4">
+                  <Icons.Search />
+                  <input
+                    type="text"
+                    value={heroSearch}
+                    onChange={e => setHeroSearch(e.target.value)}
+                    placeholder="Search for cars, electronics, services..."
+                    className="w-full py-3 bg-transparent border-none outline-none text-ink-0 dark:text-surface-1 placeholder:text-ink-5 dark:placeholder:text-surface-4 text-base"
+                  />
+                </div>
+                <button type="submit" className="px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all shadow-lg shadow-brand-500/20 text-sm whitespace-nowrap">
+                  Search
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-4 ml-1">
+                {['Tesla Model 3','MacBook Pro','Freelance Design','Real Estate'].map(tag => (
+                  <button key={tag} onClick={() => { setSearchQuery(tag); navigate('search'); }} className="px-3 py-1.5 text-xs font-medium text-ink-4 dark:text-surface-4 bg-surface-2/50 dark:bg-ink-1/50 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-950/20 hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      {/* CATEGORIES */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <SectionHeading title="Explore Categories" subtitle="Browse across our diverse marketplace" action="View All" onAction={() => navigate('browse')} />
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
+          {CATEGORIES.map((cat, i) => (
+            <button
+              key={cat.id}
+              onClick={() => navigate('browse', { category: cat.id })}
+              className={`animate-fadeInUp delay-${(i % 6) + 1} group p-4 rounded-2xl bg-surface-0 dark:bg-ink-1 border border-ink-0/5 dark:border-surface-1/5 hover:border-brand-300 dark:hover:border-brand-700 hover:shadow-lg hover:shadow-brand-500/5 transition-all text-center`}
+            >
+              <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">{cat.icon}</div>
+              <p className="text-xs font-semibold text-ink-2 dark:text-surface-2 truncate">{cat.name}</p>
+              <p className="text-[10px] text-ink-5 mt-0.5">{cat.count.toLocaleString()}</p>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* FEATURED LISTINGS */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <SectionHeading title="Featured Listings" subtitle="Hand-picked premium items from verified sellers" action="See All" onAction={() => navigate('browse')} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredListings.map((listing, i) => (
+            <ListingCard key={listing.id} listing={listing} index={i} />
+          ))}
+        </div>
+      </section>
+
+      {/* TRENDING */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
+            <Icons.TrendingUp />
+          </div>
+          <div>
+            <h2 className="font-display text-3xl font-bold text-ink-0 dark:text-surface-1">Trending Now</h2>
+            <p className="text-ink-4 dark:text-surface-4 text-sm mt-0.5">Most viewed listings this week</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {trendingListings.map((listing, i) => (
+            <ListingCard key={listing.id} listing={listing} index={i} />
+          ))}
+        </div>
+      </section>
+
+      {/* STATISTICS */}
+      <section ref={statsRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="bg-gradient-to-br from-ink-0 to-ink-1 dark:from-ink-1 dark:to-ink-2 rounded-3xl p-8 sm:p-12 relative overflow-hidden">
+          <div className="absolute inset-0 hero-mesh opacity-50" />
+          <div className="relative z-10">
+            <h2 className="font-display text-3xl sm:text-4xl font-bold text-surface-1 text-center mb-3">The numbers speak for themselves</h2>
+            <p className="text-surface-4 text-center mb-12 text-lg">A thriving marketplace trusted by thousands</p>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+              {stats.map((stat, i) => (
+                <div key={stat.label} className={`text-center ${statsVisible ? 'animate-countUp' : 'opacity-0'}`} style={{ animationDelay: `${i * 0.15}s` }}>
+                  <div className="w-12 h-12 rounded-2xl bg-brand-500/10 flex items-center justify-center mx-auto mb-4 text-brand-400">{stat.icon}</div>
+                  <p className="font-display text-3xl sm:text-4xl font-bold text-surface-1">{stat.value}</p>
+                  <p className="text-surface-4 text-sm mt-1">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <SectionHeading title="What our users say" subtitle="Join thousands of satisfied buyers and sellers" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {TESTIMONIALS.map((t, i) => (
+            <div key={t.id} className={`animate-fadeInUp delay-${i + 1} p-6 bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5`}>
+              <div className="flex gap-1 mb-4">
+                {Array(t.rating).fill(0).map((_, j) => <span key={j} className="text-brand-500"><Icons.Star /></span>)}
+              </div>
+              <p className="text-ink-2 dark:text-surface-3 text-[15px] leading-relaxed mb-6">"{t.text}"</p>
+              <div className="flex items-center gap-3">
+                <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
+                <div>
+                  <p className="font-semibold text-sm text-ink-0 dark:text-surface-1">{t.name}</p>
+                  <p className="text-xs text-ink-4 dark:text-surface-4">{t.role}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center py-16 px-6 bg-gradient-to-br from-brand-50 to-brand-100/50 dark:from-brand-950/20 dark:to-brand-900/10 rounded-3xl border border-brand-200/30 dark:border-brand-800/20">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-ink-0 dark:text-surface-1 mb-4">Ready to start selling?</h2>
+          <p className="text-ink-4 dark:text-surface-4 text-lg mb-8 max-w-md mx-auto">Create your seller account in minutes and reach millions of buyers.</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button onClick={() => navigate('create')} className="px-8 py-3.5 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all shadow-lg shadow-brand-500/20">
+              Create a Listing
+            </button>
+            <button onClick={() => navigate('register')} className="px-8 py-3.5 bg-surface-0 dark:bg-ink-1 text-ink-0 dark:text-surface-1 font-semibold rounded-xl border border-ink-0/10 dark:border-surface-1/10 hover:border-brand-300 dark:hover:border-brand-700 transition-all">
+              Open a Shop
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// ==================== BROWSE PAGE ====================
+function BrowsePage() {
+  const { navigate, selectedCategory, setSelectedCategory, searchQuery, setSearchQuery } = useApp();
+  const [priceRange, setPriceRange] = useState([0, 100000]);
+  const [sortBy, setSortBy] = useState('newest');
+  const [viewMode, setViewMode] = useState('grid');
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  const filtered = useMemo(() => {
+    let list = [...LISTINGS];
+    if (selectedCategory) list = list.filter(l => l.category === selectedCategory);
+    if (searchQuery) list = list.filter(l => l.title.toLowerCase().includes(searchQuery.toLowerCase()) || l.seller.toLowerCase().includes(searchQuery.toLowerCase()));
+    list = list.filter(l => l.price >= priceRange[0] && l.price <= priceRange[1]);
+    if (sortBy === 'price-low') list.sort((a, b) => a.price - b.price);
+    else if (sortBy === 'price-high') list.sort((a, b) => b.price - a.price);
+    else if (sortBy === 'popular') list.sort((a, b) => b.views - a.views);
+    return list;
+  }, [selectedCategory, searchQuery, priceRange, sortBy]);
+
+  const activeCategory = CATEGORIES.find(c => c.id === selectedCategory);
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 text-sm text-ink-4 dark:text-surface-4 mb-6 animate-fadeIn">
+        <button onClick={() => { setSelectedCategory(null); navigate('home'); }} className="hover:text-brand-500 transition-colors">Home</button>
+        <Icons.ChevronRight />
+        <span className="text-ink-1 dark:text-surface-2 font-medium">{activeCategory ? activeCategory.name : searchQuery ? `Search: "${searchQuery}"` : 'All Categories'}</span>
+      </div>
+
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 animate-fadeInUp">
+        <div>
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink-0 dark:text-surface-1">
+            {activeCategory ? activeCategory.name : searchQuery ? 'Search Results' : 'Browse All'}
+          </h1>
+          <p className="text-ink-4 dark:text-surface-4 mt-1">{filtered.length} listings found</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <button onClick={() => setFiltersOpen(!filtersOpen)} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-ink-0/10 dark:border-surface-1/10 text-sm font-medium hover:border-brand-300 dark:hover:border-brand-700 transition-colors">
+            <Icons.Filter /> Filters
+          </button>
+          <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="px-4 py-2.5 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 text-sm font-medium outline-none appearance-none cursor-pointer">
+            <option value="newest">Newest First</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="popular">Most Popular</option>
+          </select>
+          <div className="hidden sm:flex items-center gap-1 p-1 rounded-xl border border-ink-0/10 dark:border-surface-1/10">
+            <button onClick={() => setViewMode('grid')} className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-brand-500 text-white' : 'text-ink-4 hover:text-ink-1'}`}><Icons.Grid /></button>
+            <button onClick={() => setViewMode('list')} className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-brand-500 text-white' : 'text-ink-4 hover:text-ink-1'}`}><Icons.List /></button>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex gap-8">
+        {/* Sidebar Filters */}
+        <aside className={`${filtersOpen ? 'fixed inset-0 z-50 bg-surface-0 dark:bg-ink-0 p-6 overflow-y-auto' : 'hidden'} lg:relative lg:block lg:p-0 w-full lg:w-64 flex-shrink-0`}>
+          {filtersOpen && (
+            <button onClick={() => setFiltersOpen(false)} className="lg:hidden mb-4 flex items-center gap-2 text-sm font-medium">
+              <Icons.X /> Close Filters
+            </button>
+          )}
+          <div className="space-y-6">
+            {/* Categories */}
+            <div>
+              <h3 className="font-semibold text-sm text-ink-0 dark:text-surface-1 mb-3">Categories</h3>
+              <div className="space-y-1">
+                <button onClick={() => setSelectedCategory(null)} className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${!selectedCategory ? 'bg-brand-50 dark:bg-brand-950/30 text-brand-600 dark:text-brand-400 font-semibold' : 'text-ink-3 dark:text-surface-3 hover:bg-ink-0/5 dark:hover:bg-surface-1/5'}`}>
+                  All Categories
+                </button>
+                {CATEGORIES.map(cat => (
+                  <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${selectedCategory === cat.id ? 'bg-brand-50 dark:bg-brand-950/30 text-brand-600 dark:text-brand-400 font-semibold' : 'text-ink-3 dark:text-surface-3 hover:bg-ink-0/5 dark:hover:bg-surface-1/5'}`}>
+                    <span className="text-base">{cat.icon}</span>
+                    <span className="flex-1">{cat.name}</span>
+                    <span className="text-xs text-ink-5">{cat.count.toLocaleString()}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Price Range */}
+            <div>
+              <h3 className="font-semibold text-sm text-ink-0 dark:text-surface-1 mb-3">Price Range</h3>
+              <div className="flex gap-2">
+                <input type="number" placeholder="Min" value={priceRange[0] || ''} onChange={e => setPriceRange([Number(e.target.value), priceRange[1]])} className="flex-1 px-3 py-2 rounded-lg border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 text-sm outline-none focus:border-brand-400" />
+                <input type="number" placeholder="Max" value={priceRange[1] === 100000 ? '' : priceRange[1]} onChange={e => setPriceRange([priceRange[0], Number(e.target.value) || 100000])} className="flex-1 px-3 py-2 rounded-lg border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 text-sm outline-none focus:border-brand-400" />
+              </div>
+            </div>
+
+            {/* Location */}
+            <div>
+              <h3 className="font-semibold text-sm text-ink-0 dark:text-surface-1 mb-3">Location</h3>
+              <input type="text" placeholder="City or zip code" className="w-full px-3 py-2 rounded-lg border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 text-sm outline-none focus:border-brand-400" />
+            </div>
+
+            {/* Condition */}
+            <div>
+              <h3 className="font-semibold text-sm text-ink-0 dark:text-surface-1 mb-3">Condition</h3>
+              {['Brand New','Used - Like New','Used - Excellent','Used - Good','Refurbished'].map(c => (
+                <label key={c} className="flex items-center gap-2 py-1.5 cursor-pointer">
+                  <input type="checkbox" className="w-4 h-4 rounded border-ink-0/20 text-brand-500 focus:ring-brand-500" />
+                  <span className="text-sm text-ink-3 dark:text-surface-3">{c}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        {/* Listings Grid */}
+        <div className="flex-1">
+          {filtered.length > 0 ? (
+            <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6' : 'space-y-4'}>
+              {filtered.map((listing, i) => (
+                viewMode === 'grid' ? <ListingCard key={listing.id} listing={listing} index={i} /> : (
+                  <div key={listing.id} className="animate-fadeIn card-hover flex gap-4 p-4 bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 cursor-pointer" onClick={() => navigate('listing', { listing })}>
+                    <img src={listing.image} alt={listing.title} className="w-40 h-28 object-cover rounded-xl flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-start">
+                        <h3 className="font-semibold text-ink-0 dark:text-surface-1 truncate">{listing.title}</h3>
+                        <p className="font-bold text-brand-600 dark:text-brand-400">${listing.price.toLocaleString()}</p>
+                      </div>
+                      <p className="text-sm text-ink-4 dark:text-surface-4 mt-1 flex items-center gap-1"><Icons.MapPin /> {listing.location}</p>
+                      <p className="text-sm text-ink-4 dark:text-surface-4 mt-1">{listing.condition}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="text-sm font-medium">{listing.seller}</span>
+                        {listing.verified && <Icons.Verified />}
+                        <span className="text-xs text-ink-5">• {listing.posted}</span>
+                      </div>
+                    </div>
+                  </div>
+                )
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20 animate-fadeIn">
+              <div className="text-6xl mb-4">🔍</div>
+              <h3 className="font-display text-2xl font-bold text-ink-0 dark:text-surface-1 mb-2">No listings found</h3>
+              <p className="text-ink-4 dark:text-surface-4 mb-6">Try adjusting your filters or search terms</p>
+              <button onClick={() => { setSelectedCategory(null); setSearchQuery(''); }} className="px-6 py-2.5 bg-brand-500 text-white font-semibold rounded-xl hover:bg-brand-600 transition-colors">Clear Filters</button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ==================== LISTING DETAIL ====================
+function ListingDetailPage() {
+  const { selectedListing, navigate, savedListings, toggleSave, isLoggedIn, addToast, setIsLoggedIn } = useApp();
+  const [contactOpen, setContactOpen] = useState(false);
+  const [msgText, setMsgText] = useState('');
+  const l = selectedListing;
+
+  if (!l) return (
+    <div className="max-w-7xl mx-auto px-4 py-20 text-center animate-fadeIn">
+      <p className="text-ink-4 dark:text-surface-4">Listing not found.</p>
+      <button onClick={() => navigate('browse')} className="mt-4 px-6 py-2 bg-brand-500 text-white rounded-xl font-semibold">Browse Listings</button>
+    </div>
+  );
+
+  const isSaved = savedListings.includes(l.id);
+  const cat = CATEGORIES.find(c => c.id === l.category);
+  const similar = LISTINGS.filter(x => x.category === l.category && x.id !== l.id).slice(0, 3);
+
+  const handleContact = () => {
+    if (!isLoggedIn) { addToast('Please log in to contact sellers', 'error'); return; }
+    addToast('Message sent to seller!');
+    setContactOpen(false);
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
+      {/* Breadcrumb */}
+      <button onClick={() => navigate('browse')} className="flex items-center gap-1.5 text-sm text-ink-4 dark:text-surface-4 hover:text-brand-500 mb-6 transition-colors">
+        <Icons.ArrowLeft /> Back to listings
+      </button>
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        {/* LEFT: Images + Details */}
+        <div className="lg:col-span-3">
+          <div className="rounded-2xl overflow-hidden mb-6 aspect-[16/10] bg-surface-2 dark:bg-ink-1">
+            <img src={l.image} alt={l.title} className="w-full h-full object-cover" />
+          </div>
+
+          {/* Image thumbnails */}
+          <div className="grid grid-cols-4 gap-2 mb-8">
+            {[1,2,3,4].map(i => (
+              <div key={i} className="aspect-square rounded-xl overflow-hidden bg-surface-2 dark:bg-ink-1 border-2 border-transparent hover:border-brand-400 cursor-pointer transition-all">
+                <img src={l.image} alt="" className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" />
+              </div>
+            ))}
+          </div>
+
+          {/* Description */}
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="px-3 py-1 bg-surface-2 dark:bg-ink-1 rounded-lg text-xs font-medium text-ink-3 dark:text-surface-3">{cat?.name}</span>
+              <span className="px-3 py-1 bg-surface-2 dark:bg-ink-1 rounded-lg text-xs font-medium text-ink-3 dark:text-surface-3">{l.condition}</span>
+            </div>
+            <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink-0 dark:text-surface-1 mb-3">{l.title}</h1>
+            <div className="flex flex-wrap items-center gap-4 text-sm text-ink-4 dark:text-surface-4">
+              <span className="flex items-center gap-1.5"><Icons.MapPin /> {l.location}</span>
+              <span>Posted {l.posted}</span>
+              <span className="flex items-center gap-1"><Icons.Eye /> {l.views.toLocaleString()} views</span>
+              <span className="flex items-center gap-1"><Icons.Heart filled={false} /> {l.favorites} saves</span>
+            </div>
+            <hr className="my-6 border-ink-0/5 dark:border-surface-1/5" />
+            <h2 className="font-semibold text-ink-0 dark:text-surface-1 mb-3">Description</h2>
+            <p className="text-ink-3 dark:text-surface-3 leading-relaxed">
+              This is a premium listing in excellent condition. The seller has verified the item's authenticity and quality.
+              Contact the seller for more details, additional photos, or to schedule a viewing. Serious inquiries only.
+              All offers will be considered. Price is negotiable for quick sale.
+            </p>
+            <div className="flex flex-wrap gap-2 mt-4">
+              {['verified','premium','shipping-available','negotiable'].map(tag => (
+                <span key={tag} className="px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-950/20 text-brand-600 dark:text-brand-400 text-xs font-medium capitalize">{tag.replace('-', ' ')}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT: Price + Seller */}
+        <div className="lg:col-span-2">
+          <div className="sticky top-24 space-y-4">
+            {/* Price Card */}
+            <div className="bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 p-6">
+              <p className="font-display text-4xl font-bold text-ink-0 dark:text-surface-1">
+                ${l.price.toLocaleString()}
+                {l.priceLabel && <span className="text-lg font-normal text-ink-4">{l.priceLabel}</span>}
+              </p>
+              <div className="flex gap-2 mt-4">
+                <button onClick={() => setContactOpen(true)} className="flex-1 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all shadow-lg shadow-brand-500/20">
+                  Contact Seller
+                </button>
+                <button onClick={() => toggleSave(l.id)} className={`w-12 rounded-xl border flex items-center justify-center transition-all ${isSaved ? 'bg-brand-50 dark:bg-brand-950/30 border-brand-300 text-brand-500' : 'border-ink-0/10 dark:border-surface-1/10 text-ink-4 hover:text-red-500'}`}>
+                  <Icons.Heart filled={isSaved} />
+                </button>
+              </div>
+              <button className="w-full mt-2 py-3 border border-ink-0/10 dark:border-surface-1/10 rounded-xl text-sm font-medium hover:border-brand-300 dark:hover:border-brand-700 transition-colors flex items-center justify-center gap-2">
+                <Icons.Flag /> Report Listing
+              </button>
+            </div>
+
+            {/* Seller Card */}
+            <div className="bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <img src={`https://i.pravatar.cc/60?img=${l.id + 20}`} alt={l.seller} className="w-12 h-12 rounded-full object-cover" />
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <p className="font-semibold text-ink-0 dark:text-surface-1">{l.seller}</p>
+                    {l.verified && <Icons.Verified />}
+                  </div>
+                  <p className="text-xs text-ink-4 dark:text-surface-4">Member since 2024</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-2 mb-4 text-center">
+                <div className="p-2 bg-surface-2/50 dark:bg-ink-2/50 rounded-xl">
+                  <p className="font-bold text-ink-0 dark:text-surface-1">{l.rating}</p>
+                  <p className="text-[10px] text-ink-4 dark:text-surface-4">Rating</p>
+                </div>
+                <div className="p-2 bg-surface-2/50 dark:bg-ink-2/50 rounded-xl">
+                  <p className="font-bold text-ink-0 dark:text-surface-1">{Math.floor(l.views / 10)}</p>
+                  <p className="text-[10px] text-ink-4 dark:text-surface-4">Sales</p>
+                </div>
+                <div className="p-2 bg-surface-2/50 dark:bg-ink-2/50 rounded-xl">
+                  <p className="font-bold text-ink-0 dark:text-surface-1">&lt;1h</p>
+                  <p className="text-[10px] text-ink-4 dark:text-surface-4">Response</p>
+                </div>
+              </div>
+              <button onClick={() => navigate('profile')} className="w-full py-2.5 border border-ink-0/10 dark:border-surface-1/10 rounded-xl text-sm font-medium hover:border-brand-300 dark:hover:border-brand-700 transition-colors">View Profile</button>
+            </div>
+
+            {/* Safety */}
+            <div className="bg-brand-50 dark:bg-brand-950/10 rounded-2xl border border-brand-200/30 dark:border-brand-800/20 p-5">
+              <div className="flex items-center gap-2 mb-2">
+                <Icons.Shield />
+                <p className="font-semibold text-sm text-ink-0 dark:text-surface-1">MarketHub Protection</p>
+              </div>
+              <ul className="space-y-1.5 text-xs text-ink-3 dark:text-surface-4">
+                <li>✓ Meet in safe public places</li>
+                <li>✓ Verify item before payment</li>
+                <li>✓ Never transfer money in advance</li>
+                <li>✓ Report suspicious listings</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Similar Listings */}
+      {similar.length > 0 && (
+        <div className="mt-16">
+          <SectionHeading title="Similar Listings" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {similar.map((item, i) => <ListingCard key={item.id} listing={item} index={i} />)}
+          </div>
+        </div>
+      )}
+
+      {/* Contact Modal */}
+      {contactOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setContactOpen(false)}>
+          <div className="absolute inset-0 bg-ink-0/50 backdrop-blur-sm" />
+          <div className="relative bg-surface-0 dark:bg-ink-1 rounded-2xl w-full max-w-md p-6 animate-scaleIn" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setContactOpen(false)} className="absolute top-4 right-4 text-ink-4 hover:text-ink-0"><Icons.X /></button>
+            <h3 className="font-display text-xl font-bold mb-4">Contact {l.seller}</h3>
+            <p className="text-sm text-ink-4 dark:text-surface-4 mb-4">About: {l.title}</p>
+            <textarea
+              value={msgText}
+              onChange={e => setMsgText(e.target.value)}
+              rows={4}
+              placeholder="Hi, I'm interested in this listing. Is it still available?"
+              className="w-full px-4 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-1 dark:bg-ink-2 outline-none focus:border-brand-400 resize-none text-sm"
+            />
+            <button onClick={handleContact} className="w-full mt-4 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all">
+              Send Message
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ==================== CREATE LISTING ====================
+function CreateListingPage() {
+  const { navigate, addToast, isLoggedIn, setIsLoggedIn } = useApp();
+  const [images, setImages] = useState([]);
+  const [dragOver, setDragOver] = useState(false);
+  const [form, setForm] = useState({ title: '', description: '', price: '', category: '', location: '', tags: '', contact: 'email' });
+  const [step, setStep] = useState(1);
+
+  if (!isLoggedIn) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-20 text-center animate-fadeIn">
+        <div className="text-6xl mb-4">🔐</div>
+        <h2 className="font-display text-2xl font-bold mb-2">Sign in to create a listing</h2>
+        <p className="text-ink-4 dark:text-surface-4 mb-6">You need an account to sell on MarketHub</p>
+        <div className="flex gap-3 justify-center">
+          <button onClick={() => navigate('login')} className="px-6 py-2.5 bg-brand-500 text-white font-semibold rounded-xl">Log In</button>
+          <button onClick={() => navigate('register')} className="px-6 py-2.5 border border-ink-0/10 dark:border-surface-1/10 font-semibold rounded-xl">Sign Up</button>
+        </div>
+      </div>
+    );
+  }
+
+  const handleDrop = (e) => {
+    e.preventDefault(); setDragOver(false);
+    const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+    addImages(files);
+  };
+  const addImages = (files) => {
+    const urls = files.map(f => URL.createObjectURL(f));
+    setImages(prev => [...prev, ...urls].slice(0, 8));
+  };
+  const removeImage = (i) => setImages(prev => prev.filter((_, idx) => idx !== i));
+
+  const handleSubmit = () => {
+    if (!form.title || !form.price || !form.category) { addToast('Please fill in required fields', 'error'); return; }
+    addToast('Listing published successfully!');
+    navigate('seller-dashboard');
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 animate-fadeIn">
+      <h1 className="font-display text-3xl font-bold text-ink-0 dark:text-surface-1 mb-2">Create a Listing</h1>
+      <p className="text-ink-4 dark:text-surface-4 mb-8">Fill in the details to post your item or service</p>
+
+      {/* Progress Steps */}
+      <div className="flex items-center gap-2 mb-10">
+        {[1,2,3].map(s => (
+          <div key={s} className="flex items-center gap-2 flex-1">
+            <button onClick={() => setStep(s)} className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${step >= s ? 'bg-brand-500 text-white' : 'bg-surface-2 dark:bg-ink-2 text-ink-4 dark:text-surface-4'}`}>{s}</button>
+            {s < 3 && <div className={`flex-1 h-0.5 rounded-full transition-all ${step > s ? 'bg-brand-500' : 'bg-surface-2 dark:bg-ink-2'}`} />}
+          </div>
+        ))}
+      </div>
+
+      {step === 1 && (
+        <div className="animate-fadeIn space-y-6">
+          {/* Image Upload */}
+          <div>
+            <label className="block font-semibold text-sm mb-2">Photos <span className="text-ink-4 dark:text-surface-4 font-normal">(up to 8)</span></label>
+            <div
+              onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={handleDrop}
+              className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer ${dragOver ? 'drop-zone-active border-brand-400 bg-brand-50 dark:bg-brand-950/10' : 'border-ink-0/10 dark:border-surface-1/10 hover:border-brand-300 dark:hover:border-brand-700'}`}
+              onClick={() => document.getElementById('fileInput').click()}
+            >
+              <input id="fileInput" type="file" multiple accept="image/*" className="hidden" onChange={e => addImages(Array.from(e.target.files))} />
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 rounded-2xl bg-brand-50 dark:bg-brand-950/30 flex items-center justify-center mb-4 text-brand-500">
+                  <Icons.Upload />
+                </div>
+                <p className="font-semibold text-ink-0 dark:text-surface-1 mb-1">Drop images here or click to browse</p>
+                <p className="text-sm text-ink-4 dark:text-surface-4">PNG, JPG, WEBP up to 10MB each</p>
+              </div>
+            </div>
+            {images.length > 0 && (
+              <div className="grid grid-cols-4 gap-2 mt-4">
+                {images.map((img, i) => (
+                  <div key={i} className="relative aspect-square rounded-xl overflow-hidden group">
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <button onClick={() => removeImage(i)} className="absolute top-1 right-1 w-6 h-6 bg-ink-0/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs">✕</button>
+                    {i === 0 && <div className="absolute bottom-1 left-1 px-2 py-0.5 bg-brand-500 text-white text-[10px] font-bold rounded">COVER</div>}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label className="block font-semibold text-sm mb-2">Title *</label>
+            <input type="text" value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="e.g., iPhone 15 Pro Max 256GB" className="w-full px-4 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 outline-none focus:border-brand-400 text-sm" />
+          </div>
+          <div>
+            <label className="block font-semibold text-sm mb-2">Description</label>
+            <textarea value={form.description} onChange={e => setForm({...form, description: e.target.value})} rows={5} placeholder="Describe your item, condition, what's included..." className="w-full px-4 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 outline-none focus:border-brand-400 text-sm resize-none" />
+          </div>
+          <button onClick={() => setStep(2)} className="w-full py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all">Next Step</button>
+        </div>
+      )}
+
+      {step === 2 && (
+        <div className="animate-fadeIn space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-semibold text-sm mb-2">Price ($) *</label>
+              <input type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} placeholder="0.00" className="w-full px-4 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 outline-none focus:border-brand-400 text-sm" />
+            </div>
+            <div>
+              <label className="block font-semibold text-sm mb-2">Category *</label>
+              <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 outline-none focus:border-brand-400 text-sm appearance-none cursor-pointer">
+                <option value="">Select category</option>
+                {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label className="block font-semibold text-sm mb-2">Location</label>
+            <input type="text" value={form.location} onChange={e => setForm({...form, location: e.target.value})} placeholder="City, State" className="w-full px-4 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 outline-none focus:border-brand-400 text-sm" />
+          </div>
+          <div>
+            <label className="block font-semibold text-sm mb-2">Tags</label>
+            <input type="text" value={form.tags} onChange={e => setForm({...form, tags: e.target.value})} placeholder="e.g., premium, shipping-available" className="w-full px-4 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 outline-none focus:border-brand-400 text-sm" />
+          </div>
+          <div>
+            <label className="block font-semibold text-sm mb-2">Preferred Contact Method</label>
+            <div className="grid grid-cols-3 gap-2">
+              {['email','phone','chat'].map(m => (
+                <button key={m} onClick={() => setForm({...form, contact: m})} className={`py-2.5 rounded-xl text-sm font-medium border transition-all capitalize ${form.contact === m ? 'border-brand-400 bg-brand-50 dark:bg-brand-950/20 text-brand-600 dark:text-brand-400' : 'border-ink-0/10 dark:border-surface-1/10 text-ink-3 dark:text-surface-3'}`}>{m}</button>
+              ))}
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <button onClick={() => setStep(1)} className="flex-1 py-3 border border-ink-0/10 dark:border-surface-1/10 rounded-xl font-semibold">Back</button>
+            <button onClick={() => setStep(3)} className="flex-1 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all">Next Step</button>
+          </div>
+        </div>
+      )}
+
+      {step === 3 && (
+        <div className="animate-fadeIn space-y-6">
+          <h3 className="font-semibold text-lg">Review your listing</h3>
+          <div className="bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 p-6 space-y-4">
+            {images.length > 0 && <img src={images[0]} alt="" className="w-full h-48 object-cover rounded-xl" />}
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div><p className="text-ink-4 dark:text-surface-4">Title</p><p className="font-medium">{form.title || '—'}</p></div>
+              <div><p className="text-ink-4 dark:text-surface-4">Price</p><p className="font-medium">${form.price || '—'}</p></div>
+              <div><p className="text-ink-4 dark:text-surface-4">Category</p><p className="font-medium">{CATEGORIES.find(c => c.id === form.category)?.name || '—'}</p></div>
+              <div><p className="text-ink-4 dark:text-surface-4">Location</p><p className="font-medium">{form.location || '—'}</p></div>
+            </div>
+            {form.description && <div><p className="text-ink-4 dark:text-surface-4 text-sm">Description</p><p className="text-sm mt-1">{form.description}</p></div>}
+          </div>
+          {/* Promotion */}
+          <div className="bg-gradient-to-r from-brand-50 to-brand-100/50 dark:from-brand-950/20 dark:to-brand-900/10 rounded-2xl p-5 border border-brand-200/30 dark:border-brand-800/20">
+            <div className="flex items-center gap-2 mb-2">
+              <Icons.Zap />
+              <p className="font-semibold text-sm">Boost your listing</p>
+            </div>
+            <p className="text-sm text-ink-4 dark:text-surface-4 mb-3">Get 10x more views with our featured placement</p>
+            <div className="grid grid-cols-3 gap-2">
+              {[{name:'Basic',price:'$4.99',duration:'3 days'},{name:'Featured',price:'$9.99',duration:'7 days'},{name:'Premium',price:'$19.99',duration:'14 days'}].map(p => (
+                <button key={p.name} className="p-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 hover:border-brand-400 transition-all text-center">
+                  <p className="font-bold text-sm">{p.name}</p>
+                  <p className="text-xs text-brand-600 dark:text-brand-400 font-semibold">{p.price}</p>
+                  <p className="text-[10px] text-ink-4">{p.duration}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <button onClick={() => setStep(2)} className="flex-1 py-3 border border-ink-0/10 dark:border-surface-1/10 rounded-xl font-semibold">Back</button>
+            <button onClick={handleSubmit} className="flex-1 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all shadow-lg shadow-brand-500/20">Publish Listing</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ==================== AUTH PAGES ====================
+function LoginPage() {
+  const { navigate, setIsLoggedIn, setCurrentUser, addToast } = useApp();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setIsLoggedIn(true);
+    setCurrentUser({ name: 'Alex Thompson', email: email || 'alex@markethub.com', avatar: 'https://i.pravatar.cc/80?img=8' });
+    addToast('Welcome back! You are now logged in.');
+    navigate('home');
+  };
+
+  return (
+    <div className="min-h-[85vh] flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md animate-fadeInUp">
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-brand-500/20">
+            <span className="text-white font-display font-bold text-2xl">M</span>
+          </div>
+          <h1 className="font-display text-3xl font-bold text-ink-0 dark:text-surface-1">Welcome back</h1>
+          <p className="text-ink-4 dark:text-surface-4 mt-2">Log in to your MarketHub account</p>
+        </div>
+
+        {/* Social Login */}
+        <div className="space-y-3 mb-6">
+          {[{name:'Google',icon:'🔵'},{name:'GitHub',icon:'⚫'},{name:'Apple',icon:'🍎'}].map(p => (
+            <button key={p.name} onClick={handleLogin} className="w-full flex items-center justify-center gap-3 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 hover:border-brand-300 dark:hover:border-brand-700 transition-all text-sm font-medium">
+              <span>{p.icon}</span> Continue with {p.name}
+            </button>
+          ))}
+        </div>
+
+        <div className="relative mb-6">
+          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-ink-0/10 dark:border-surface-1/10"></div></div>
+          <div className="relative flex justify-center text-xs"><span className="px-3 bg-surface-1 dark:bg-ink-0 text-ink-4 dark:text-surface-4">or</span></div>
+        </div>
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Email</label>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" className="w-full px-4 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 outline-none focus:border-brand-400 text-sm" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Password</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className="w-full px-4 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 outline-none focus:border-brand-400 text-sm" />
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" className="w-4 h-4 rounded border-ink-0/20 text-brand-500" /> Remember me</label>
+            <button type="button" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">Forgot password?</button>
+          </div>
+          <button type="submit" className="w-full py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all shadow-lg shadow-brand-500/20">Log In</button>
+        </form>
+
+        <p className="text-center text-sm text-ink-4 dark:text-surface-4 mt-6">
+          Don't have an account? <button onClick={() => navigate('register')} className="text-brand-600 dark:text-brand-400 font-semibold hover:underline">Sign up</button>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function RegisterPage() {
+  const { navigate, setIsLoggedIn, setCurrentUser, addToast } = useApp();
+  const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    if (form.password !== form.confirm) { addToast('Passwords do not match', 'error'); return; }
+    setIsLoggedIn(true);
+    setCurrentUser({ name: form.name || 'New User', email: form.email || 'user@markethub.com', avatar: 'https://i.pravatar.cc/80?img=8' });
+    addToast('Account created successfully!');
+    navigate('home');
+  };
+
+  return (
+    <div className="min-h-[85vh] flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md animate-fadeInUp">
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-brand-500/20">
+            <span className="text-white font-display font-bold text-2xl">M</span>
+          </div>
+          <h1 className="font-display text-3xl font-bold text-ink-0 dark:text-surface-1">Create your account</h1>
+          <p className="text-ink-4 dark:text-surface-4 mt-2">Start buying and selling on MarketHub</p>
+        </div>
+
+        <div className="space-y-3 mb-6">
+          {[{name:'Google',icon:'🔵'},{name:'GitHub',icon:'⚫'},{name:'Apple',icon:'🍎'}].map(p => (
+            <button key={p.name} onClick={handleRegister} className="w-full flex items-center justify-center gap-3 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 hover:border-brand-300 dark:hover:border-brand-700 transition-all text-sm font-medium">
+              <span>{p.icon}</span> Sign up with {p.name}
+            </button>
+          ))}
+        </div>
+
+        <div className="relative mb-6">
+          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-ink-0/10 dark:border-surface-1/10"></div></div>
+          <div className="relative flex justify-center text-xs"><span className="px-3 bg-surface-1 dark:bg-ink-0 text-ink-4 dark:text-surface-4">or</span></div>
+        </div>
+
+        <form onSubmit={handleRegister} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Full Name</label>
+            <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="John Doe" className="w-full px-4 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 outline-none focus:border-brand-400 text-sm" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Email</label>
+            <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} placeholder="you@example.com" className="w-full px-4 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 outline-none focus:border-brand-400 text-sm" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Password</label>
+            <input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} placeholder="Min. 8 characters" className="w-full px-4 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 outline-none focus:border-brand-400 text-sm" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Confirm Password</label>
+            <input type="password" value={form.confirm} onChange={e => setForm({...form, confirm: e.target.value})} placeholder="Repeat password" className="w-full px-4 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-1 outline-none focus:border-brand-400 text-sm" />
+          </div>
+          <label className="flex items-start gap-2 text-sm cursor-pointer">
+            <input type="checkbox" className="w-4 h-4 mt-0.5 rounded border-ink-0/20 text-brand-500" />
+            <span className="text-ink-4 dark:text-surface-4">I agree to the <button type="button" className="text-brand-600 dark:text-brand-400 font-medium">Terms of Service</button> and <button type="button" className="text-brand-600 dark:text-brand-400 font-medium">Privacy Policy</button></span>
+          </label>
+          <button type="submit" className="w-full py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all shadow-lg shadow-brand-500/20">Create Account</button>
+        </form>
+
+        <p className="text-center text-sm text-ink-4 dark:text-surface-4 mt-6">
+          Already have an account? <button onClick={() => navigate('login')} className="text-brand-600 dark:text-brand-400 font-semibold hover:underline">Log in</button>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ==================== MESSAGES ====================
+function MessagesPage() {
+  const { messages, setMessages, chatMessages, setChatMessages, isLoggedIn, navigate, addToast } = useApp();
+  const [activeChat, setActiveChat] = useState(null);
+  const [newMsg, setNewMsg] = useState('');
+  const [typing, setTyping] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  if (!isLoggedIn) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-20 text-center animate-fadeIn">
+        <div className="text-6xl mb-4">💬</div>
+        <h2 className="font-display text-2xl font-bold mb-2">Sign in to access messages</h2>
+        <p className="text-ink-4 dark:text-surface-4 mb-6">Connect with buyers and sellers</p>
+        <button onClick={() => navigate('login')} className="px-6 py-2.5 bg-brand-500 text-white font-semibold rounded-xl">Log In</button>
+      </div>
+    );
+  }
+
+  const activeConv = messages.find(m => m.id === activeChat);
+
+  const sendMessage = () => {
+    if (!newMsg.trim()) return;
+    setChatMessages(prev => [...prev, { id: Date.now(), sender: 'me', text: newMsg, time: new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) }]);
+    setNewMsg('');
+    setTimeout(() => {
+      setTyping(true);
+      setTimeout(() => {
+        setTyping(false);
+        setChatMessages(prev => [...prev, { id: Date.now(), sender: 'them', text: 'Thanks for your message! I\'ll get back to you shortly.', time: new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) }]);
+      }, 1500);
+    }, 800);
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 animate-fadeIn">
+      <h1 className="font-display text-3xl font-bold text-ink-0 dark:text-surface-1 mb-6">Messages</h1>
+      <div className="flex gap-4 h-[calc(100vh-200px)] min-h-[500px]">
+        {/* Conversation List */}
+        <div className={`${activeChat ? 'hidden md:flex' : 'flex'} flex-col w-full md:w-80 flex-shrink-0 bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 overflow-hidden`}>
+          <div className="p-4 border-b border-ink-0/5 dark:border-surface-1/5">
+            <input type="text" placeholder="Search conversations..." className="w-full px-3 py-2 rounded-xl bg-surface-2/50 dark:bg-ink-2/50 border-none outline-none text-sm" />
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            {messages.map(m => (
+              <button key={m.id} onClick={() => { setActiveChat(m.id); setMessages(prev => prev.map(x => x.id === m.id ? {...x, unread: 0} : x)); }}
+                className={`w-full flex items-center gap-3 p-4 hover:bg-surface-2/50 dark:hover:bg-ink-2/50 transition-colors border-b border-ink-0/5 dark:border-surface-1/5 text-left ${activeChat === m.id ? 'bg-brand-50/50 dark:bg-brand-950/10' : ''}`}>
+                <div className="relative flex-shrink-0">
+                  <img src={m.avatar} alt={m.from} className="w-11 h-11 rounded-full object-cover" />
+                  {m.online && <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-surface-0 dark:border-ink-1" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-center">
+                    <p className="font-semibold text-sm truncate">{m.from}</p>
+                    <span className="text-[10px] text-ink-5 flex-shrink-0">{m.time}</span>
+                  </div>
+                  <p className="text-xs text-ink-4 dark:text-surface-4 truncate mt-0.5">{m.lastMessage}</p>
+                </div>
+                {m.unread > 0 && <span className="w-5 h-5 bg-brand-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center flex-shrink-0">{m.unread}</span>}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Chat Area */}
+        <div className={`${activeChat ? 'flex' : 'hidden md:flex'} flex-col flex-1 bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 overflow-hidden`}>
+          {activeConv ? (
+            <>
+              {/* Chat Header */}
+              <div className="flex items-center gap-3 p-4 border-b border-ink-0/5 dark:border-surface-1/5">
+                <button onClick={() => setActiveChat(null)} className="md:hidden text-ink-4"><Icons.ArrowLeft /></button>
+                <img src={activeConv.avatar} alt="" className="w-9 h-9 rounded-full object-cover" />
+                <div className="flex-1">
+                  <p className="font-semibold text-sm">{activeConv.from}</p>
+                  <p className="text-[10px] text-green-500">{activeConv.online ? 'Online' : 'Offline'}</p>
+                </div>
+              </div>
+
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                {chatMessages.map(msg => (
+                  <div key={msg.id} className={`flex ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-[75%] px-4 py-2.5 ${msg.sender === 'me' ? 'chat-bubble-sent bg-brand-500 text-white' : 'chat-bubble-received bg-surface-2 dark:bg-ink-2 text-ink-0 dark:text-surface-2'}`}>
+                      <p className="text-sm">{msg.text}</p>
+                      <p className={`text-[10px] mt-1 ${msg.sender === 'me' ? 'text-white/60' : 'text-ink-4 dark:text-surface-4'}`}>{msg.time} {msg.sender === 'me' && '✓✓'}</p>
+                    </div>
+                  </div>
+                ))}
+                {typing && (
+                  <div className="flex justify-start">
+                    <div className="chat-bubble-received bg-surface-2 dark:bg-ink-2 px-4 py-3">
+                      <div className="flex gap-1.5">
+                        <div className="w-2 h-2 bg-ink-4 dark:bg-surface-4 rounded-full animate-bounce" style={{animationDelay:'0ms'}} />
+                        <div className="w-2 h-2 bg-ink-4 dark:bg-surface-4 rounded-full animate-bounce" style={{animationDelay:'150ms'}} />
+                        <div className="w-2 h-2 bg-ink-4 dark:bg-surface-4 rounded-full animate-bounce" style={{animationDelay:'300ms'}} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Input */}
+              <div className="p-4 border-t border-ink-0/5 dark:border-surface-1/5">
+                <div className="flex items-center gap-2">
+                  <button className="p-2 text-ink-4 dark:text-surface-4 hover:text-brand-500"><Icons.Image /></button>
+                  <input
+                    type="text"
+                    value={newMsg}
+                    onChange={e => setNewMsg(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && sendMessage()}
+                    placeholder="Type a message..."
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-surface-2/50 dark:bg-ink-2/50 border-none outline-none text-sm"
+                  />
+                  <button onClick={sendMessage} className="p-2.5 bg-brand-500 text-white rounded-xl hover:bg-brand-600 transition-colors"><Icons.Send /></button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="flex-1 flex items-center justify-center text-center p-8">
+              <div>
+                <div className="text-5xl mb-4">💬</div>
+                <h3 className="font-display text-xl font-bold text-ink-0 dark:text-surface-1 mb-2">Select a conversation</h3>
+                <p className="text-sm text-ink-4 dark:text-surface-4">Choose from your existing conversations or start a new one</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ==================== SEARCH ====================
+function SearchPage() {
+  const { searchQuery, setSearchQuery, navigate } = useApp();
+  const [localQuery, setLocalQuery] = useState(searchQuery);
+
+  const results = useMemo(() => {
+    if (!searchQuery) return LISTINGS.slice(0, 8);
+    return LISTINGS.filter(l =>
+      l.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      l.seller.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      l.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      l.location.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery]);
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
+      {/* Search Bar */}
+      <div className="max-w-2xl mx-auto mb-10">
+        <div className="flex items-center gap-2 p-2 bg-surface-0 dark:bg-ink-1 rounded-2xl shadow-lg border border-ink-0/5 dark:border-surface-1/10">
+          <div className="flex items-center gap-3 flex-1 px-4">
+            <Icons.Search />
+            <input
+              type="text"
+              value={localQuery}
+              onChange={e => setLocalQuery(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') setSearchQuery(localQuery); }}
+              placeholder="Search listings, sellers, categories..."
+              className="w-full py-3 bg-transparent border-none outline-none text-ink-0 dark:text-surface-1 placeholder:text-ink-5"
+              autoFocus
+            />
+          </div>
+          <button onClick={() => setSearchQuery(localQuery)} className="px-6 py-3 bg-brand-500 text-white font-semibold rounded-xl text-sm">Search</button>
+        </div>
+      </div>
+
+      {searchQuery ? (
+        <>
+          <p className="text-ink-4 dark:text-surface-4 mb-6">{results.length} results for "<span className="text-ink-0 dark:text-surface-1 font-medium">{searchQuery}</span>"</p>
+          {results.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {results.map((l, i) => <ListingCard key={l.id} listing={l} index={i} />)}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <div className="text-5xl mb-4">🔍</div>
+              <h3 className="font-display text-xl font-bold mb-2">No results found</h3>
+              <p className="text-ink-4 dark:text-surface-4">Try different keywords or check your spelling</p>
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          <h2 className="font-display text-2xl font-bold mb-4">Popular Searches</h2>
+          <div className="flex flex-wrap gap-2 mb-10">
+            {['Tesla','MacBook','PlayStation','Web Design','Photography','Vintage','Apartments','Mountain Bike','React Developer','Headphones'].map(s => (
+              <button key={s} onClick={() => { setLocalQuery(s); setSearchQuery(s); }} className="px-4 py-2 rounded-full bg-surface-0 dark:bg-ink-1 border border-ink-0/5 dark:border-surface-1/5 text-sm font-medium hover:border-brand-300 dark:hover:border-brand-700 transition-all">{s}</button>
+            ))}
+          </div>
+          <h2 className="font-display text-2xl font-bold mb-4">Trending Now</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {LISTINGS.slice(0, 4).map((l, i) => <ListingCard key={l.id} listing={l} index={i} />)}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function SavedPage() {
+  const { savedListings, navigate, isLoggedIn } = useApp();
+  const listings = LISTINGS.filter(l => savedListings.includes(l.id));
+
+  if (!isLoggedIn) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-20 text-center animate-fadeIn">
+        <div className="text-6xl mb-4">❤️</div>
+        <h2 className="font-display text-2xl font-bold mb-2">Saved Listings</h2>
+        <p className="text-ink-4 dark:text-surface-4 mb-6">Log in to save your favorite listings</p>
+        <button onClick={() => navigate('login')} className="px-6 py-2.5 bg-brand-500 text-white font-semibold rounded-xl">Log In</button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
+      <h1 className="font-display text-3xl font-bold text-ink-0 dark:text-surface-1 mb-6">Saved Listings</h1>
+      {listings.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {listings.map((l, i) => <ListingCard key={l.id} listing={l} index={i} />)}
+        </div>
+      ) : (
+        <div className="text-center py-20">
+          <div className="text-5xl mb-4">📌</div>
+          <h3 className="font-display text-xl font-bold mb-2">No saved listings yet</h3>
+          <p className="text-ink-4 dark:text-surface-4 mb-6">Browse and save items you're interested in</p>
+          <button onClick={() => navigate('browse')} className="px-6 py-2.5 bg-brand-500 text-white font-semibold rounded-xl">Browse Listings</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ==================== SELLER DASHBOARD ====================
+function SellerDashboardPage() {
+  const { navigate, isLoggedIn } = useApp();
+  if (!isLoggedIn) { navigate('login'); return null; }
+
+  const myListings = LISTINGS.slice(0, 5);
+  const statsData = [
+    { label: 'Total Views', value: '12,847', change: '+12.5%', positive: true, icon: <Icons.Eye /> },
+    { label: 'Active Listings', value: '24', change: '+3', positive: true, icon: <Icons.Package /> },
+    { label: 'Messages', value: '89', change: '+8.2%', positive: true, icon: <Icons.Message /> },
+    { label: 'Revenue', value: '$8,420', change: '+23.1%', positive: true, icon: <Icons.DollarSign /> },
+  ];
+
+  const chartBars = [35, 52, 48, 65, 72, 58, 80, 68, 90, 75, 85, 95];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="font-display text-3xl font-bold text-ink-0 dark:text-surface-1">Seller Dashboard</h1>
+          <p className="text-ink-4 dark:text-surface-4 mt-1">Welcome back, Alex</p>
+        </div>
+        <button onClick={() => navigate('create')} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all shadow-lg shadow-brand-500/20">
+          <Icons.Plus /> New Listing
+        </button>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {statsData.map((s, i) => (
+          <div key={s.label} className={`animate-fadeInUp delay-${i + 1} bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 p-5`}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-ink-4 dark:text-surface-4">{s.icon}</span>
+              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${s.positive ? 'text-green-600 bg-green-50 dark:bg-green-950/30 dark:text-green-400' : 'text-red-600 bg-red-50 dark:bg-red-950/30 dark:text-red-400'}`}>{s.change}</span>
+            </div>
+            <p className="font-display text-2xl font-bold text-ink-0 dark:text-surface-1">{s.value}</p>
+            <p className="text-sm text-ink-4 dark:text-surface-4 mt-0.5">{s.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Chart */}
+      <div className="bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 p-6 mb-8">
+        <h3 className="font-semibold text-ink-0 dark:text-surface-1 mb-6">Monthly Views</h3>
+        <div className="flex items-end gap-2 h-40">
+          {chartBars.map((h, i) => (
+            <div key={i} className="flex-1 flex flex-col items-center gap-1">
+              <div className="w-full rounded-t-lg bg-gradient-to-t from-brand-500 to-brand-400 transition-all hover:from-brand-600 hover:to-brand-500" style={{ height: `${h}%` }} />
+              <span className="text-[9px] text-ink-5 hidden sm:block">{months[i]}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* My Listings */}
+      <div className="bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 overflow-hidden">
+        <div className="p-6 border-b border-ink-0/5 dark:border-surface-1/5 flex items-center justify-between">
+          <h3 className="font-semibold text-ink-0 dark:text-surface-1">My Listings</h3>
+          <span className="text-sm text-ink-4 dark:text-surface-4">{myListings.length} active</span>
+        </div>
+        <div className="divide-y divide-ink-0/5 dark:divide-surface-1/5">
+          {myListings.map(l => (
+            <div key={l.id} className="flex items-center gap-4 p-4 hover:bg-surface-2/30 dark:hover:bg-ink-2/30 transition-colors">
+              <img src={l.image} alt={l.title} className="w-16 h-12 rounded-lg object-cover flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-sm text-ink-0 dark:text-surface-1 truncate">{l.title}</p>
+                <p className="text-xs text-ink-4 dark:text-surface-4 flex items-center gap-2 mt-0.5">
+                  <span>${l.price.toLocaleString()}</span>
+                  <span>•</span>
+                  <span className="flex items-center gap-1"><Icons.Eye /> {l.views}</span>
+                  <span>•</span>
+                  <span className="flex items-center gap-1"><Icons.Heart filled={false} /> {l.favorites}</span>
+                </p>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button className="p-2 rounded-lg hover:bg-ink-0/5 dark:hover:bg-surface-1/5 text-ink-4 dark:text-surface-4"><Icons.Edit /></button>
+                <button className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 text-ink-4 hover:text-red-500"><Icons.Trash /></button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ==================== ADMIN DASHBOARD ====================
+function AdminDashboardPage() {
+  const { isLoggedIn, navigate } = useApp();
+  const [activeTab, setActiveTab] = useState('overview');
+
+  if (!isLoggedIn) { navigate('login'); return null; }
+
+  const tabs = ['overview','users','listings','reports','categories'];
+  const adminStats = [
+    { label: 'Total Users', value: '48,291', change: '+2.4%', icon: <Icons.Users /> },
+    { label: 'Active Listings', value: '12,483', change: '+5.7%', icon: <Icons.Package /> },
+    { label: 'Pending Reports', value: '23', change: '-12%', icon: <Icons.Flag /> },
+    { label: 'Revenue (MTD)', value: '$124,800', change: '+18.3%', icon: <Icons.DollarSign /> },
+  ];
+  const recentUsers = [
+    { name: 'Sarah Chen', email: 'sarah@example.com', status: 'active', joined: '2 hours ago' },
+    { name: 'John Smith', email: 'john@example.com', status: 'pending', joined: '5 hours ago' },
+    { name: 'Emma Wilson', email: 'emma@example.com', status: 'active', joined: '1 day ago' },
+    { name: 'Carlos Rivera', email: 'carlos@example.com', status: 'suspended', joined: '2 days ago' },
+    { name: 'Lisa Park', email: 'lisa@example.com', status: 'active', joined: '3 days ago' },
+  ];
+  const pendingListings = LISTINGS.slice(0, 3).map(l => ({ ...l, status: ['pending','flagged','pending'][LISTINGS.indexOf(l) % 3] }));
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="font-display text-3xl font-bold text-ink-0 dark:text-surface-1">Admin Dashboard</h1>
+          <p className="text-ink-4 dark:text-surface-4 mt-1">Platform management & analytics</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+          <span className="text-sm text-green-600 dark:text-green-400 font-medium">All systems operational</span>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-1 p-1 bg-surface-2/50 dark:bg-ink-1/50 rounded-xl mb-8 overflow-x-auto">
+        {tabs.map(tab => (
+          <button key={tab} onClick={() => setActiveTab(tab)} className={`px-4 py-2 rounded-lg text-sm font-medium capitalize whitespace-nowrap transition-all ${activeTab === tab ? 'bg-surface-0 dark:bg-ink-1 text-ink-0 dark:text-surface-1 shadow-sm' : 'text-ink-4 dark:text-surface-4 hover:text-ink-0 dark:hover:text-surface-2'}`}>
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {activeTab === 'overview' && (
+        <div className="animate-fadeIn">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            {adminStats.map((s, i) => (
+              <div key={s.label} className={`animate-fadeInUp delay-${i + 1} bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 p-5`}>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-ink-4 dark:text-surface-4">{s.icon}</span>
+                  <span className="text-xs font-semibold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/30 px-2 py-0.5 rounded-full">{s.change}</span>
+                </div>
+                <p className="font-display text-2xl font-bold text-ink-0 dark:text-surface-1">{s.value}</p>
+                <p className="text-sm text-ink-4 dark:text-surface-4 mt-0.5">{s.label}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Revenue Chart */}
+          <div className="bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 p-6 mb-8">
+            <h3 className="font-semibold mb-6">Platform Revenue</h3>
+            <div className="flex items-end gap-3 h-48">
+              {[42, 55, 48, 70, 65, 80, 72, 88, 76, 92, 85, 98].map((h, i) => (
+                <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                  <div className="w-full rounded-t-lg bg-gradient-to-t from-brand-600 to-brand-400 hover:from-brand-700 hover:to-brand-500 transition-all" style={{ height: `${h}%` }} />
+                  <span className="text-[9px] text-ink-5 hidden sm:block">{['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][i]}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Recent Users */}
+            <div className="bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 overflow-hidden">
+              <div className="p-5 border-b border-ink-0/5 dark:border-surface-1/5">
+                <h3 className="font-semibold">Recent Users</h3>
+              </div>
+              <div className="divide-y divide-ink-0/5 dark:divide-surface-1/5">
+                {recentUsers.map(u => (
+                  <div key={u.email} className="flex items-center gap-3 p-4">
+                    <img src={`https://i.pravatar.cc/40?u=${u.email}`} alt="" className="w-9 h-9 rounded-full" />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{u.name}</p>
+                      <p className="text-xs text-ink-4 dark:text-surface-4">{u.joined}</p>
+                    </div>
+                    <span className={`text-[10px] font-semibold px-2 py-1 rounded-full capitalize ${u.status === 'active' ? 'bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400' : u.status === 'pending' ? 'bg-yellow-50 dark:bg-yellow-950/30 text-yellow-600 dark:text-yellow-400' : 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400'}`}>{u.status}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Pending Listings */}
+            <div className="bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 overflow-hidden">
+              <div className="p-5 border-b border-ink-0/5 dark:border-surface-1/5">
+                <h3 className="font-semibold">Pending Moderation</h3>
+              </div>
+              <div className="divide-y divide-ink-0/5 dark:divide-surface-1/5">
+                {pendingListings.map(l => (
+                  <div key={l.id} className="flex items-center gap-3 p-4">
+                    <img src={l.image} alt="" className="w-12 h-9 rounded-lg object-cover flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{l.title}</p>
+                      <p className="text-xs text-ink-4 dark:text-surface-4">{l.seller} • ${l.price.toLocaleString()}</p>
+                    </div>
+                    <div className="flex gap-1">
+                      <button className="p-1.5 rounded-lg bg-green-50 dark:bg-green-950/30 text-green-600 hover:bg-green-100"><Icons.Check /></button>
+                      <button className="p-1.5 rounded-lg bg-red-50 dark:bg-red-950/30 text-red-600 hover:bg-red-100"><Icons.X /></button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'users' && (
+        <div className="animate-fadeIn bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 overflow-hidden">
+          <div className="p-5 border-b border-ink-0/5 dark:border-surface-1/5 flex justify-between items-center">
+            <h3 className="font-semibold">User Management</h3>
+            <input type="text" placeholder="Search users..." className="px-3 py-2 rounded-lg bg-surface-2/50 dark:bg-ink-2/50 border-none outline-none text-sm w-48" />
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-surface-2/30 dark:bg-ink-2/30">
+                <tr>{['User','Email','Status','Joined','Actions'].map(h => <th key={h} className="text-left px-5 py-3 font-semibold text-ink-4 dark:text-surface-4 text-xs uppercase tracking-wider">{h}</th>)}</tr>
+              </thead>
+              <tbody className="divide-y divide-ink-0/5 dark:divide-surface-1/5">
+                {recentUsers.map(u => (
+                  <tr key={u.email} className="hover:bg-surface-2/20 dark:hover:bg-ink-2/20">
+                    <td className="px-5 py-3 font-medium">{u.name}</td>
+                    <td className="px-5 py-3 text-ink-4 dark:text-surface-4">{u.email}</td>
+                    <td className="px-5 py-3"><span className={`text-[10px] font-semibold px-2 py-1 rounded-full capitalize ${u.status === 'active' ? 'bg-green-50 dark:bg-green-950/30 text-green-600' : u.status === 'pending' ? 'bg-yellow-50 dark:bg-yellow-950/30 text-yellow-600' : 'bg-red-50 dark:bg-red-950/30 text-red-600'}`}>{u.status}</span></td>
+                    <td className="px-5 py-3 text-ink-4 dark:text-surface-4">{u.joined}</td>
+                    <td className="px-5 py-3"><button className="text-brand-500 hover:underline text-xs font-medium">Manage</button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'listings' && (
+        <div className="animate-fadeIn">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {LISTINGS.slice(0, 6).map((l, i) => <ListingCard key={l.id} listing={l} index={i} />)}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'reports' && (
+        <div className="animate-fadeIn bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 p-6">
+          <h3 className="font-semibold mb-4">Recent Reports</h3>
+          <div className="space-y-3">
+            {['Spam listing detected','Suspicious seller activity','Counterfeit product report','Payment dispute','Misleading description'].map((r, i) => (
+              <div key={i} className="flex items-center justify-between p-4 bg-surface-2/30 dark:bg-ink-2/30 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className={`w-2 h-2 rounded-full ${i < 2 ? 'bg-red-500' : 'bg-yellow-500'}`} />
+                  <div>
+                    <p className="font-medium text-sm">{r}</p>
+                    <p className="text-xs text-ink-4 dark:text-surface-4">{i + 1} report(s) • {i + 2} hours ago</p>
+                  </div>
+                </div>
+                <button className="text-xs font-medium text-brand-500 hover:underline">Review</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'categories' && (
+        <div className="animate-fadeIn">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {CATEGORIES.map(cat => (
+              <div key={cat.id} className="bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 p-5 flex items-center gap-4">
+                <div className="text-3xl">{cat.icon}</div>
+                <div className="flex-1">
+                  <p className="font-semibold">{cat.name}</p>
+                  <p className="text-sm text-ink-4 dark:text-surface-4">{cat.count.toLocaleString()} listings</p>
+                </div>
+                <button className="text-xs font-medium text-brand-500 hover:underline">Edit</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ==================== PROFILE ====================
+function ProfilePage() {
+  const { navigate, isLoggedIn, savedListings } = useApp();
+  if (!isLoggedIn) { navigate('login'); return null; }
+
+  const myListings = LISTINGS.slice(0, 4);
+
+  return (
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 animate-fadeIn">
+      {/* Profile Header */}
+      <div className="bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 overflow-hidden mb-8">
+        <div className="h-32 bg-gradient-to-r from-brand-500 to-brand-700 relative">
+          <div className="absolute inset-0 hero-mesh opacity-50" />
+        </div>
+        <div className="px-6 pb-6 -mt-12 relative">
+          <img src="https://i.pravatar.cc/120?img=8" alt="Profile" className="w-24 h-24 rounded-2xl border-4 border-surface-0 dark:border-ink-1 object-cover shadow-lg" />
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mt-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="font-display text-2xl font-bold text-ink-0 dark:text-surface-1">Alex Thompson</h1>
+                <Icons.Verified />
+              </div>
+              <p className="text-ink-4 dark:text-surface-4 text-sm mt-0.5">Member since January 2024 • San Francisco, CA</p>
+              <div className="flex items-center gap-4 mt-2 text-sm">
+                <span className="flex items-center gap-1"><Icons.Star /> <strong>4.9</strong> rating</span>
+                <span>24 listings</span>
+                <span>{savedListings.length} saved</span>
+              </div>
+            </div>
+            <button onClick={() => navigate('settings')} className="px-4 py-2 rounded-xl border border-ink-0/10 dark:border-surface-1/10 text-sm font-medium hover:border-brand-300 dark:hover:border-brand-700 transition-colors">Edit Profile</button>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-3 gap-4 mb-8">
+        {[{l:'Total Sales',v:'$12,480'},{l:'Items Sold',v:'34'},{l:'Avg. Rating',v:'4.9'}].map(s => (
+          <div key={s.l} className="bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 p-5 text-center">
+            <p className="font-display text-2xl font-bold text-ink-0 dark:text-surface-1">{s.v}</p>
+            <p className="text-sm text-ink-4 dark:text-surface-4">{s.l}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Listings */}
+      <h2 className="font-display text-2xl font-bold text-ink-0 dark:text-surface-1 mb-4">Listings by this seller</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {myListings.map((l, i) => <ListingCard key={l.id} listing={l} index={i} />)}
+      </div>
+    </div>
+  );
+}
+
+function SettingsPage() {
+  const { isLoggedIn, navigate, addToast, theme, toggleTheme } = useApp();
+  const [name, setName] = useState('Alex Thompson');
+  const [email, setEmail] = useState('alex@markethub.com');
+  const [bio, setBio] = useState('Passionate seller and collector. Quality items only.');
+  const [lang, setLang] = useState('en');
   const [notifs, setNotifs] = useState({ email: true, push: true, marketing: false });
 
-  const toggleDark = () => {
-    setDark(!dark);
-    document.documentElement.classList.toggle("dark");
-    localStorage.setItem("markethub-theme", dark ? "light" : "dark");
-  };
-
-  const handleSave = async () => {
-    await updateUsername(name);
-    toast("Settings saved successfully!");
-  };
-
-  if (!user) return null;
+  if (!isLoggedIn) { navigate('login'); return null; }
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 animate-fadeIn">
@@ -40,23 +1940,17 @@ export default function SettingsPage() {
         <div className="bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 p-6">
           <h3 className="font-semibold text-ink-0 dark:text-surface-1 mb-4">Profile Information</h3>
           <div className="space-y-4">
-            <Input label="Full Name" value={name} onChange={(e) => setName(e.target.value)} />
             <div>
-              <label className="block text-sm font-medium mb-1.5">Bio</label>
-              <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} className="w-full px-4 py-3 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-2 outline-none focus:border-brand-400 text-sm resize-none" />
+              <label className="block text-sm font-medium mb-1.5">Full Name</label>
+              <input type="text" value={name} onChange={e => setName(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-2 outline-none focus:border-brand-400 text-sm" />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5">Profile Picture</label>
-              <div className="flex items-center gap-4">
-                {user.avatar ? (
-                  <img src={user.avatar} alt="" className="w-16 h-16 rounded-xl object-cover" />
-                ) : (
-                  <div className="w-16 h-16 rounded-xl bg-brand-500 flex items-center justify-center text-white font-display font-bold text-xl">
-                    {user.username[0]?.toUpperCase()}
-                  </div>
-                )}
-                <Button variant="secondary" size="sm">Upload Photo</Button>
-              </div>
+              <label className="block text-sm font-medium mb-1.5">Email</label>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-2 outline-none focus:border-brand-400 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Bio</label>
+              <textarea value={bio} onChange={e => setBio(e.target.value)} rows={3} className="w-full px-4 py-2.5 rounded-xl border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-2 outline-none focus:border-brand-400 text-sm resize-none" />
             </div>
           </div>
         </div>
@@ -66,20 +1960,14 @@ export default function SettingsPage() {
           <h3 className="font-semibold text-ink-0 dark:text-surface-1 mb-4">Preferences</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-sm">Dark Mode</p>
-                <p className="text-xs text-ink-4 dark:text-surface-4">Toggle dark theme</p>
-              </div>
-              <button onClick={toggleDark} className={`w-12 h-6 rounded-full transition-all ${dark ? "bg-brand-500" : "bg-ink-0/10 dark:bg-surface-1/20"} relative`}>
-                <span className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${dark ? "left-7" : "left-1"}`} />
+              <div><p className="font-medium text-sm">Dark Mode</p><p className="text-xs text-ink-4 dark:text-surface-4">Toggle dark theme</p></div>
+              <button onClick={toggleTheme} className={`w-12 h-6 rounded-full transition-all ${theme === 'dark' ? 'bg-brand-500' : 'bg-ink-0/10 dark:bg-surface-1/20'} relative`}>
+                <span className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${theme === 'dark' ? 'left-7' : 'left-1'}`} />
               </button>
             </div>
             <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-sm">Language</p>
-                <p className="text-xs text-ink-4 dark:text-surface-4">Select interface language</p>
-              </div>
-              <select value={lang} onChange={(e) => setLang(e.target.value)} className="px-3 py-1.5 rounded-lg border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-2 text-sm outline-none">
+              <div><p className="font-medium text-sm">Language</p><p className="text-xs text-ink-4 dark:text-surface-4">Select interface language</p></div>
+              <select value={lang} onChange={e => setLang(e.target.value)} className="px-3 py-1.5 rounded-lg border border-ink-0/10 dark:border-surface-1/10 bg-surface-0 dark:bg-ink-2 text-sm outline-none">
                 <option value="en">English</option>
                 <option value="fr">Français</option>
                 <option value="ar">العربية</option>
@@ -92,21 +1980,11 @@ export default function SettingsPage() {
         <div className="bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 p-6">
           <h3 className="font-semibold text-ink-0 dark:text-surface-1 mb-4">Notifications</h3>
           <div className="space-y-3">
-            {([
-              { key: "email", label: "Email Notifications", desc: "Receive updates via email" },
-              { key: "push", label: "Push Notifications", desc: "Browser push notifications" },
-              { key: "marketing", label: "Marketing Emails", desc: "Promotional offers and news" },
-            ] as const).map((n) => (
+            {[{key:'email',label:'Email Notifications',desc:'Receive updates via email'},{key:'push',label:'Push Notifications',desc:'Browser push notifications'},{key:'marketing',label:'Marketing Emails',desc:'Promotional offers and news'}].map(n => (
               <div key={n.key} className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-sm">{n.label}</p>
-                  <p className="text-xs text-ink-4 dark:text-surface-4">{n.desc}</p>
-                </div>
-                <button
-                  onClick={() => setNotifs({ ...notifs, [n.key]: !notifs[n.key] })}
-                  className={`w-12 h-6 rounded-full transition-all ${notifs[n.key] ? "bg-brand-500" : "bg-ink-0/10 dark:bg-surface-1/20"} relative`}
-                >
-                  <span className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${notifs[n.key] ? "left-7" : "left-1"}`} />
+                <div><p className="font-medium text-sm">{n.label}</p><p className="text-xs text-ink-4 dark:text-surface-4">{n.desc}</p></div>
+                <button onClick={() => setNotifs({...notifs, [n.key]: !notifs[n.key]})} className={`w-12 h-6 rounded-full transition-all ${notifs[n.key] ? 'bg-brand-500' : 'bg-ink-0/10 dark:bg-surface-1/20'} relative`}>
+                  <span className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${notifs[n.key] ? 'left-7' : 'left-1'}`} />
                 </button>
               </div>
             ))}
@@ -117,11 +1995,108 @@ export default function SettingsPage() {
         <div className="bg-red-50/50 dark:bg-red-950/10 rounded-2xl border border-red-200/30 dark:border-red-800/20 p-6">
           <h3 className="font-semibold text-red-600 dark:text-red-400 mb-2">Danger Zone</h3>
           <p className="text-sm text-ink-4 dark:text-surface-4 mb-4">Once you delete your account, there is no going back.</p>
-          <Button variant="danger" size="sm">Delete Account</Button>
+          <button className="px-4 py-2 border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 text-sm font-medium rounded-xl hover:bg-red-100 dark:hover:bg-red-950/30 transition-colors">Delete Account</button>
         </div>
 
-        <Button onClick={handleSave} className="w-full">Save Changes</Button>
+        <button onClick={() => addToast('Settings saved successfully!')} className="w-full py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all shadow-lg shadow-brand-500/20">Save Changes</button>
       </div>
     </div>
   );
 }
+
+// ==================== FOOTER ====================
+function Footer() {
+  const { navigate } = useApp();
+  return (
+    <footer className="bg-ink-0 dark:bg-ink-1 border-t border-ink-0/5 dark:border-surface-1/5 mt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+          <div className="col-span-2 lg:col-span-1">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center">
+                <span className="text-white font-display font-bold text-base">M</span>
+              </div>
+              <span className="font-display font-bold text-lg text-surface-1">MarketHub</span>
+            </div>
+            <p className="text-sm text-ink-5 leading-relaxed">The modern marketplace for buying, selling, and offering services across every niche.</p>
+          </div>
+          {[
+            { title: 'Marketplace', links: [['browse','Browse All'],['trending','Trending'],['featured','Featured'],['categories','Categories']] },
+            { title: 'Company', links: [['home','About Us'],['home','Careers'],['home','Press'],['home','Blog']] },
+            { title: 'Support', links: [['home','Help Center'],['home','Safety'],['home','Terms'],['home','Privacy']] },
+          ].map(col => (
+            <div key={col.title}>
+              <h4 className="font-semibold text-sm text-surface-2 mb-4">{col.title}</h4>
+              <ul className="space-y-2.5">
+                {col.links.map(([page, label]) => (
+                  <li key={label}><button onClick={() => navigate(page)} className="text-sm text-ink-5 hover:text-brand-400 transition-colors">{label}</button></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          <div>
+            <h4 className="font-semibold text-sm text-surface-2 mb-4">Language</h4>
+            <div className="flex flex-col gap-2">
+              {['English','Français','العربية'].map(lang => (
+                <button key={lang} className="text-sm text-ink-5 hover:text-brand-400 transition-colors text-left">{lang}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="border-t border-ink-0/10 dark:border-surface-1/5 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-ink-5">&copy; 2026 MarketHub. All rights reserved.</p>
+          <div className="flex gap-6">
+            {['Twitter','GitHub','LinkedIn'].map(s => (
+              <button key={s} className="text-sm text-ink-5 hover:text-brand-400 transition-colors">{s}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// ==================== ROUTER ====================
+function Router() {
+  const { currentPage } = useApp();
+  const pages = {
+    'home': HomePage,
+    'browse': BrowsePage,
+    'listing': ListingDetailPage,
+    'create': CreateListingPage,
+    'login': LoginPage,
+    'register': RegisterPage,
+    'messages': MessagesPage,
+    'search': SearchPage,
+    'saved': SavedPage,
+    'seller-dashboard': SellerDashboardPage,
+    'admin': AdminDashboardPage,
+    'profile': ProfilePage,
+    'settings': SettingsPage,
+    'freelance': BrowsePage,
+    'jobs': BrowsePage,
+  };
+  const Page = pages[currentPage] || HomePage;
+  return <Page />;
+}
+
+// ==================== APP ====================
+function App() {
+  return (
+    <AppProvider>
+      <div className="min-h-screen">
+        <Navbar />
+        <main className="pt-16 lg:pt-18">
+          <Router />
+        </main>
+        <Footer />
+        <ToastContainer />
+      </div>
+    </AppProvider>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
