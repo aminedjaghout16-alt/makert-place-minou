@@ -60,12 +60,12 @@ export default function HomePage() {
           <div className="max-w-3xl">
             <div className="animate-fadeInUp inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-50 dark:bg-brand-950/30 border border-brand-200 dark:border-brand-800/30 mb-8">
               <ZapIcon size={16} />
-              <span className="text-sm font-semibold text-brand-700 dark:text-brand-400">
+              <span className="text-xs sm:text-sm font-semibold text-brand-700 dark:text-brand-400">
                 New: AI-powered recommendations are live
               </span>
             </div>
 
-            <h1 className="animate-fadeInUp delay-1 font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-ink-0 dark:text-surface-1 tracking-tight leading-[1.08]">
+            <h1 className="animate-fadeInUp delay-1 font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-ink-0 dark:text-surface-1 tracking-tight leading-[1.1]">
               Buy, sell &amp; offer
               <br />
               <span className="bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent">
@@ -137,12 +137,12 @@ export default function HomePage() {
       {/* ── Trending ──────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center flex-shrink-0">
             <TrendingUpIcon />
           </div>
           <div>
-            <h2 className="font-display text-3xl font-bold text-ink-0 dark:text-surface-1">Trending Now</h2>
-            <p className="text-ink-4 dark:text-surface-4 text-sm mt-0.5">Most viewed listings this week</p>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink-0 dark:text-surface-1 leading-tight">Trending Now</h2>
+            <p className="text-ink-4 dark:text-surface-4 text-xs sm:text-sm mt-1">Most viewed listings this week</p>
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -157,18 +157,18 @@ export default function HomePage() {
         <div className="bg-gradient-to-br from-ink-0 to-ink-1 dark:from-ink-1 dark:to-ink-2 rounded-3xl p-8 sm:p-12 relative overflow-hidden">
           <div className="absolute inset-0 hero-mesh opacity-50" />
           <div className="relative z-10">
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-surface-1 text-center mb-3">
+            <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-surface-1 text-center mb-3 leading-tight">
               The numbers speak for themselves
             </h2>
-            <p className="text-surface-4 text-center mb-12 text-lg">A thriving marketplace trusted by thousands</p>
+            <p className="text-surface-4 text-center mb-10 sm:mb-12 text-base sm:text-lg">A thriving marketplace trusted by thousands</p>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
               {stats.map((stat, i) => (
                 <div key={stat.label} className={`text-center ${statsVisible ? "animate-countUp" : "opacity-0"}`} style={{ animationDelay: `${i * 0.15}s` }}>
                   <div className="w-12 h-12 rounded-2xl bg-brand-500/10 flex items-center justify-center mx-auto mb-4 text-brand-400">
                     {stat.icon}
                   </div>
-                  <p className="font-display text-3xl sm:text-4xl font-bold text-surface-1">{stat.value}</p>
-                  <p className="text-surface-4 text-sm mt-1">{stat.label}</p>
+                  <p className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-surface-1 leading-tight">{stat.value}</p>
+                  <p className="text-surface-4 text-xs sm:text-sm mt-1.5">{stat.label}</p>
                 </div>
               ))}
             </div>
@@ -181,20 +181,20 @@ export default function HomePage() {
         <SectionHeading title="What our users say" subtitle="Join thousands of satisfied buyers and sellers" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.map((t, i) => (
-            <div key={t.id} className={`animate-fadeInUp delay-${i + 1} p-6 bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5`}>
-              <div className="flex gap-1 mb-4">
+            <div key={t.id} className={`animate-fadeInUp delay-${i + 1} p-5 sm:p-6 bg-surface-0 dark:bg-ink-1 rounded-2xl border border-ink-0/5 dark:border-surface-1/5 flex flex-col`}>
+              <div className="flex gap-1 mb-3">
                 {Array(t.rating).fill(0).map((_, j) => (
                   <span key={j} className="text-brand-500"><StarIcon size={14} /></span>
                 ))}
               </div>
-              <p className="text-ink-2 dark:text-surface-3 text-[15px] leading-relaxed mb-6">
+              <p className="text-ink-2 dark:text-surface-3 text-sm sm:text-[15px] leading-relaxed mb-5 flex-1">
                 &ldquo;{t.text}&rdquo;
               </p>
-              <div className="flex items-center gap-3">
-                <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
-                <div>
-                  <p className="font-semibold text-sm text-ink-0 dark:text-surface-1">{t.name}</p>
-                  <p className="text-xs text-ink-4 dark:text-surface-4">{t.role}</p>
+              <div className="flex items-center gap-3 pt-3 border-t border-ink-0/5 dark:border-surface-1/5">
+                <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="font-semibold text-sm text-ink-0 dark:text-surface-1 truncate">{t.name}</p>
+                  <p className="text-xs text-ink-4 dark:text-surface-4 truncate">{t.role}</p>
                 </div>
               </div>
             </div>
@@ -205,8 +205,8 @@ export default function HomePage() {
       {/* ── CTA ───────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center py-16 px-6 bg-gradient-to-br from-brand-50 to-brand-100/50 dark:from-brand-950/20 dark:to-brand-900/10 rounded-3xl border border-brand-200/30 dark:border-brand-800/20">
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-ink-0 dark:text-surface-1 mb-4">Ready to start selling?</h2>
-          <p className="text-ink-4 dark:text-surface-4 text-lg mb-8 max-w-md mx-auto">
+          <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-ink-0 dark:text-surface-1 mb-4 leading-tight">Ready to start selling?</h2>
+          <p className="text-ink-4 dark:text-surface-4 text-base sm:text-lg mb-8 max-w-md mx-auto leading-relaxed">
             Create your seller account in minutes and reach millions of buyers.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
