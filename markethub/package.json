@@ -13,7 +13,7 @@
     "@prisma/client": "^6.8.0",
     "@supabase/supabase-js": "^2.49.4",
     "firebase": "^11.6.1",
-    "next": "15.3.3",
+    "next": "15.5.19",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-dropzone": "^14.3.8"
