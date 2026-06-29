@@ -29,7 +29,7 @@ export default function CreateListingPage() {
 
   if (!user) {
     return (
-      <div className="max-w-md mx-auto px-4 py-20 text-center animate-fadeIn">
+      <div className="container py-24 flex flex-col items-center justify-center text-center animate-fadeIn">
         <div className="text-6xl mb-4">🔐</div>
         <h2 className="font-display text-2xl font-bold mb-2">Sign in to create a listing</h2>
         <p className="text-ink-4 dark:text-surface-4 mb-6">You need an account to sell on MarketHub</p>
@@ -91,7 +91,7 @@ export default function CreateListingPage() {
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 animate-fadeIn">
+    <div className="container py-8 animate-fadeIn max-w-3xl mx-auto">
       <h1 className="font-display text-3xl font-bold text-ink-0 dark:text-surface-1 mb-2">Create a Listing</h1>
       <p className="text-ink-4 dark:text-surface-4 mb-8">Fill in the details to post your item or service</p>
 
