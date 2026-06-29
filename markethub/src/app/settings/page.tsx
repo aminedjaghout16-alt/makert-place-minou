@@ -32,7 +32,7 @@ export default function SettingsPage() {
   if (!user) return null;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 animate-fadeIn">
+    <div className="w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fadeIn">
       <h1 className="font-display text-3xl font-bold text-ink-0 dark:text-surface-1 mb-8">Settings</h1>
 
       <div className="space-y-6">
