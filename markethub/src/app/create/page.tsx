@@ -29,7 +29,7 @@ export default function CreateListingPage() {
 
   if (!user) {
     return (
-      <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col items-center justify-center text-center animate-fadeIn">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col items-center justify-center text-center animate-fadeIn">
         <div className="text-6xl mb-4">🔐</div>
         <h2 className="font-display text-2xl font-bold mb-2">Sign in to create a listing</h2>
         <p className="text-ink-4 dark:text-surface-4 mb-6">You need an account to sell on MarketHub</p>

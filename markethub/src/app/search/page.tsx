@@ -36,7 +36,7 @@ export default function SearchPage() {
   const popularSearches = ["Tesla", "MacBook", "PlayStation", "Web Design", "Photography", "Vintage", "Apartments", "React"];
 
   return (
-    <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fadeIn">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fadeIn">
       {/* Search bar */}
       <div className="max-w-2xl mx-auto mb-10">
         <form onSubmit={handleSearch}>

@@ -1,6 +1,3 @@
-// ─────────────────────────────────────────────
-// Providers — Client-Side Wrappers
-// ─────────────────────────────────────────────
 "use client";
 
 import React, { useState, useEffect, type ReactNode } from "react";
@@ -12,7 +9,6 @@ import { Footer } from "@/components/layout/Footer";
 
 function ThemeProvider({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
     setMounted(true);
     const saved = localStorage.getItem("markethub-theme");
@@ -20,42 +16,20 @@ function ThemeProvider({ children }: { children: ReactNode }) {
       document.documentElement.classList.add("dark");
     }
   }, []);
-
   if (!mounted) return <>{children}</>;
   return <>{children}</>;
 }
 
-function AuthLoadingScreen() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-surface-1 dark:bg-ink-0">
-      <div className="flex flex-col items-center gap-4 animate-fadeIn">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-lg shadow-brand-500/20 animate-pulse">
-          <span className="text-white font-display font-bold text-xl">M</span>
-        </div>
-        <p className="text-sm text-ink-4 dark:text-surface-4 font-medium">Loading MarketHub…</p>
-      </div>
-    </div>
-  );
-}
-
 function AuthLoader({ children }: { children: ReactNode }) {
   const { loading, initialized } = useAuth();
-  if (loading && !initialized) return <AuthLoadingScreen />;
+  if (loading && !initialized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 animate-pulse" />
+      </div>
+    );
+  }
   return <>{children}</>;
-}
-
-function LayoutWrapper({ children }: { children: ReactNode }) {
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      {/* pt-nav offsets the fixed navbar height */}
-      <main className="flex-1 pt-[68px]">
-        {children}
-      </main>
-      <Footer />
-      <ToastContainer />
-    </div>
-  );
 }
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -64,7 +38,14 @@ export function Providers({ children }: { children: ReactNode }) {
       <ToastProvider>
         <AuthProvider>
           <AuthLoader>
-            <LayoutWrapper>{children}</LayoutWrapper>
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-1" style={{ paddingTop: "68px" }}>
+                {children}
+              </main>
+              <Footer />
+              <ToastContainer />
+            </div>
           </AuthLoader>
         </AuthProvider>
       </ToastProvider>

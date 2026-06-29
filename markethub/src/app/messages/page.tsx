@@ -38,7 +38,7 @@ export default function MessagesPage() {
 
   if (!user) {
     return (
-      <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col items-center justify-center text-center animate-fadeIn">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col items-center justify-center text-center animate-fadeIn">
         <div className="text-6xl mb-4">💬</div>
         <h2 className="font-display text-2xl font-bold mb-2">Sign in to access messages</h2>
         <p className="text-ink-4 dark:text-surface-4 mb-6">Connect with buyers and sellers</p>
@@ -72,7 +72,7 @@ export default function MessagesPage() {
   };
 
   return (
-    <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
       <h1 className="font-display text-3xl font-bold text-ink-0 dark:text-surface-1 mb-6">Messages</h1>
 
       <div className="flex gap-4 h-[calc(100vh-220px)] min-h-[500px]">

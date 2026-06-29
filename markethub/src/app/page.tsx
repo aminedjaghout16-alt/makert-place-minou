@@ -60,7 +60,7 @@ export default function HomePage() {
         <div className="absolute top-1/4 right-1/4 w-80 h-80 bg-brand-400/10 rounded-full blur-3xl animate-float pointer-events-none" />
         <div className="absolute bottom-1/4 left-1/6  w-96 h-96 bg-brand-600/6  rounded-full blur-3xl animate-float delay-3 pointer-events-none" />
 
-        <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20">
           <div className="max-w-2xl">
             {/* Eyebrow */}
             <div className="animate-fadeInUp inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-50 dark:bg-brand-950/30 border border-brand-200/60 dark:border-brand-800/30 mb-8">
@@ -124,7 +124,7 @@ export default function HomePage() {
 
       {/* ── Categories ────────────────────────── */}
       <section className="py-20">
-        <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
             title="Explore Categories"
             subtitle="Browse across our diverse marketplace"
@@ -148,7 +148,7 @@ export default function HomePage() {
 
       {/* ── Featured Listings ─────────────────── */}
       <section className="py-10">
-        <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
             title="Featured Listings"
             subtitle="Hand-picked premium items from verified sellers"
@@ -165,7 +165,7 @@ export default function HomePage() {
 
       {/* ── Trending ──────────────────────────── */}
       <section className="py-16">
-        <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shrink-0">
               <TrendingUpIcon className="text-white" size={18} />
@@ -185,7 +185,7 @@ export default function HomePage() {
 
       {/* ── Statistics ────────────────────────── */}
       <section ref={statsRef} className="py-16">
-        <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gradient-to-br from-ink-0 to-ink-1 dark:from-ink-1 dark:to-ink-2 rounded-3xl px-8 py-14 sm:px-14 relative overflow-hidden">
             <div className="absolute inset-0 hero-mesh opacity-60 pointer-events-none" />
             <div className="relative z-10">
@@ -219,7 +219,7 @@ export default function HomePage() {
 
       {/* ── Testimonials ──────────────────────── */}
       <section className="py-16">
-        <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
             title="What our users say"
             subtitle="Join thousands of satisfied buyers and sellers"
@@ -260,7 +260,7 @@ export default function HomePage() {
 
       {/* ── CTA ───────────────────────────────── */}
       <section className="py-16">
-        <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center py-16 px-8 bg-gradient-to-br from-brand-50 to-brand-100/40 dark:from-brand-950/20 dark:to-brand-900/10 rounded-3xl border border-brand-200/40 dark:border-brand-800/20">
             <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-ink-0 dark:text-surface-1 mb-4">
               Ready to start selling?

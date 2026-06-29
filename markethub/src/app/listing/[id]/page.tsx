@@ -34,7 +34,7 @@ export default function ListingDetailPage() {
 
   if (!listing) {
     return (
-      <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col items-center justify-center text-center animate-fadeIn">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col items-center justify-center text-center animate-fadeIn">
         <div className="text-5xl mb-4">🏷️</div>
         <h2 className="font-display text-2xl font-bold text-ink-0 dark:text-surface-1 mb-2">Listing not found</h2>
         <p className="text-ink-4 dark:text-surface-4 mb-6">This listing may have been removed or doesn't exist.</p>
@@ -59,7 +59,7 @@ export default function ListingDetailPage() {
   };
 
   return (
-    <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
       {/* Back */}
       <button
         onClick={() => router.back()}

@@ -33,7 +33,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center py-16 min-h-[80vh]">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center py-16 min-h-[80vh]">
       <div className="w-full max-w-md animate-fadeInUp">
         <Link href="/auth/login" className="flex items-center gap-1.5 text-sm text-ink-4 dark:text-surface-4 hover:text-brand-500 mb-8 transition-colors">
           <ArrowLeftIcon size={16} /> Back to login

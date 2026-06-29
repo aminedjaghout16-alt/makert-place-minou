@@ -73,7 +73,7 @@ export function Navbar() {
       )}
       style={{ height: "var(--nav-height)" }}
     >
-      <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-4">
 
         {/* ── Logo ── */}
         <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
@@ -236,7 +236,7 @@ export function Navbar() {
       {/* ── Mobile drawer ── */}
       {mobileOpen && (
         <div className="lg:hidden glass border-t border-black/6 dark:border-white/6 animate-slideDown">
-          <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col gap-1">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}

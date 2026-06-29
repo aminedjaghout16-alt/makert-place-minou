@@ -12,7 +12,7 @@ export default function SavedPage() {
 
   if (!user) {
     return (
-      <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col items-center justify-center text-center animate-fadeIn">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col items-center justify-center text-center animate-fadeIn">
         <div className="text-5xl mb-5">❤️</div>
         <h2 className="font-display text-2xl font-bold text-ink-0 dark:text-surface-1 mb-2">Saved Listings</h2>
         <p className="text-ink-4 dark:text-surface-4 mb-8">Log in to save your favourite listings</p>
@@ -22,7 +22,7 @@ export default function SavedPage() {
   }
 
   return (
-    <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fadeIn">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fadeIn">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink-0 dark:text-surface-1">Saved Listings</h1>
