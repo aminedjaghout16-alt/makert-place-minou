@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-// Category Card Component
+// Category Card — improved spacing & alignment
 // ─────────────────────────────────────────────
 "use client";
 
@@ -18,17 +18,17 @@ export function CategoryCard({ slug, name, icon, count, index = 0 }: CategoryCar
   return (
     <Link
       href={`/browse?category=${slug}`}
-      className={`animate-fadeInUp delay-${(index % 6) + 1} group py-4 px-3 rounded-2xl bg-surface-0 dark:bg-ink-1 border border-ink-0/5 dark:border-surface-1/5 hover:border-brand-300 dark:hover:border-brand-700 hover:shadow-lg hover:shadow-brand-500/5 transition-all text-center`}
+      className={`animate-fadeInUp delay-${(index % 6) + 1} group flex flex-col items-center justify-center gap-2 py-5 px-3 rounded-2xl bg-surface-0 dark:bg-ink-1 border border-black/5 dark:border-white/6 hover:border-brand-300 dark:hover:border-brand-700 hover:shadow-lg hover:shadow-brand-500/8 transition-all text-center`}
     >
-      <div className="text-2xl sm:text-3xl mb-2 group-hover:scale-110 transition-transform">
+      <span className="text-3xl leading-none group-hover:scale-110 transition-transform duration-200">
         {icon}
-      </div>
-      <p className="text-[11px] sm:text-xs font-semibold text-ink-2 dark:text-surface-2 truncate leading-tight">
+      </span>
+      <p className="text-xs font-semibold text-ink-2 dark:text-surface-2 leading-tight">
         {name}
       </p>
       {count !== undefined && (
-        <p className="text-[10px] text-ink-5 mt-1">
-          {count.toLocaleString()}
+        <p className="text-[10px] text-ink-5 dark:text-surface-4">
+          {count.toLocaleString()} listings
         </p>
       )}
     </Link>
