@@ -80,7 +80,7 @@ export default function HomePage() {
             </h1>
 
             <p className="animate-fadeInUp delay-2 text-lg text-ink-4 dark:text-surface-4 leading-relaxed mb-10 max-w-lg">
-              The premium marketplace connecting buyers and sellers across 15 categories. From cars to freelance services — everything in one place.
+              The premium marketplace connecting buyers and sellers across 14 categories. From cars to freelance services — everything in one place.
             </p>
 
             {/* Search bar */}
@@ -102,20 +102,6 @@ export default function HomePage() {
                 >
                   Search
                 </button>
-              </div>
-
-              {/* Quick tags */}
-              <div className="flex flex-wrap gap-2 mt-4">
-                {["Tesla Model 3", "MacBook Pro", "Freelance Design", "Real Estate"].map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => router.push(`/search?q=${encodeURIComponent(tag)}`)}
-                    className="px-3 py-1.5 text-xs font-medium text-ink-4 dark:text-surface-4 bg-surface-0/60 dark:bg-ink-1/60 border border-black/8 dark:border-white/8 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-950/20 hover:text-brand-600 dark:hover:text-brand-400 hover:border-brand-200 dark:hover:border-brand-800 transition-colors"
-                  >
-                    {tag}
-                  </button>
-                ))}
               </div>
             </form>
           </div>

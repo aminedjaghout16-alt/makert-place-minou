@@ -6,7 +6,6 @@ export const CATEGORIES = [
   { slug: "cars", name: "Cars", icon: "🚗", color: "#ee7612" },
   { slug: "real-estate", name: "Real Estate", icon: "🏠", color: "#b94309" },
   { slug: "electronics", name: "Electronics", icon: "📱", color: "#4a90d9" },
-  { slug: "phones", name: "Phones", icon: "📲", color: "#7c3aed" },
   { slug: "gaming", name: "Gaming", icon: "🎮", color: "#7c3aed" },
   { slug: "jobs", name: "Jobs", icon: "💼", color: "#059669" },
   { slug: "freelance", name: "Freelance Services", icon: "🎨", color: "#d946ef" },

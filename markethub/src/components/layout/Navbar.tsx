@@ -91,12 +91,7 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={cn(
-                "px-3.5 py-2 text-sm font-medium rounded-lg transition-colors",
-                isActive(link.href)
-                  ? "text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/25"
-                  : "text-ink-3 dark:text-surface-3 hover:text-ink-0 dark:hover:text-surface-1 hover:bg-black/5 dark:hover:bg-white/5"
-              )}
+                "px-3.5 py-2 text-sm font-medium rounded-lg transition-colors text-ink-3 dark:text-surface-3 hover:text-ink-0 dark:hover:text-surface-1 hover:bg-black/5 dark:hover:bg-white/5",
             >
               {link.label}
             </Link>
